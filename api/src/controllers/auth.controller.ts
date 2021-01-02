@@ -23,7 +23,7 @@ export class AuthController {
     */
    register = async (req: Request, res: Response) => {
       try {
-         await this.authService.register(req.body);
+         await this.authService.register(req.body.email, req.body.password);
          res.status(StatusCodes.CREATED).send();
       } catch (err) {
          res.status(401).send(err.message);

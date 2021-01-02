@@ -1,6 +1,5 @@
 import { Pool } from 'mysql';
 import q from 'q';
-import { CreateUser } from '../models/create/create-user';
 
 export class AuthService {
 
@@ -8,12 +7,15 @@ export class AuthService {
       private readonly db: Pool
    ) { }
 
-   register = async (user: CreateUser): Promise<any> => {
+   register = async (email: string, password: string): Promise<any> => {
       const deferred = q.defer<any>();
 
       this.db.query(
          'INSERT INTO user_account SET ?',
-         user,
+         {
+            email,
+            password_hash: password
+         },
          (err, results, _fields) => {
             if (err) {
                deferred.reject(err);

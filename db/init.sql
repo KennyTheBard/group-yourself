@@ -1,3 +1,6 @@
+create database if not exists group_db;
+use group_db;
+
 CREATE TABLE student (
   id int PRIMARY KEY AUTO_INCREMENT,
   first_name varchar(255),
@@ -10,10 +13,10 @@ CREATE TABLE student (
   group_id int
 );
 
-CREATE TABLE specialization (
+CREATE TABLE group_collection (
   id int PRIMARY KEY AUTO_INCREMENT,
   name varchar(255),
-  manager_id int,
+  organizer_id int,
   config_id int
 );
 
@@ -21,7 +24,7 @@ CREATE TABLE stud_group (
   id int PRIMARY KEY AUTO_INCREMENT,
   name varchar(255),
   starting_year int,
-  spec_id int,
+  collection_id int,
   max_seats int
 );
 
@@ -29,7 +32,8 @@ CREATE TABLE user_account (
   id int PRIMARY KEY AUTO_INCREMENT,
   student_id int,
   email varchar(255) UNIQUE,
-  password_hash varchar(255)
+  password_hash varchar(255),
+  role ENUM ('student', 'organizer', 'admin')
 );
 
 CREATE TABLE manager (
@@ -46,10 +50,10 @@ CREATE TABLE configuration (
 
 ALTER TABLE student ADD FOREIGN KEY (group_id) REFERENCES stud_group (id);
 
-ALTER TABLE specialization ADD FOREIGN KEY (manager_id) REFERENCES manager (id);
+ALTER TABLE group_collection ADD FOREIGN KEY (organizer_id) REFERENCES user (id);
 
-ALTER TABLE specialization ADD FOREIGN KEY (config_id) REFERENCES configuration (id);
+ALTER TABLE group_collection ADD FOREIGN KEY (config_id) REFERENCES configuration (id);
 
-ALTER TABLE stud_group ADD FOREIGN KEY (spec_id) REFERENCES specialization (id);
+ALTER TABLE stud_group ADD FOREIGN KEY (collection_id) REFERENCES group_collection (id);
 
 ALTER TABLE user_account ADD FOREIGN KEY (student_id) REFERENCES student (id);
