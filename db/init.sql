@@ -17,7 +17,7 @@ CREATE TABLE specialization (
   config_id int
 );
 
-CREATE TABLE group (
+CREATE TABLE stud_group (
   id int PRIMARY KEY AUTO_INCREMENT,
   name varchar(255),
   starting_year int,
@@ -25,14 +25,11 @@ CREATE TABLE group (
   max_seats int
 );
 
-CREATE TABLE user (
+CREATE TABLE user_account (
   id int PRIMARY KEY AUTO_INCREMENT,
   student_id int,
-  email varchar(255),
-  password_hash varchar(255),
-  activated bool,
-  activation_token varchar(255),
-  reset_password_token varchar(255)
+  email varchar(255) UNIQUE,
+  password_hash varchar(255)
 );
 
 CREATE TABLE manager (
@@ -43,16 +40,16 @@ CREATE TABLE manager (
 
 CREATE TABLE configuration (
   id int PRIMARY KEY AUTO_INCREMENT,
-  join_allowed bool,
+  join_allowed BOOLEAN,
   strategy_used ENUM ('RANDOM', 'KEEP_AVERAGE_SCORE', 'UNIFORM_SCORE', 'SORTED_SCORE')
 );
 
-ALTER TABLE student ADD FOREIGN KEY (group_id) REFERENCES group (id);
+ALTER TABLE student ADD FOREIGN KEY (group_id) REFERENCES stud_group (id);
 
 ALTER TABLE specialization ADD FOREIGN KEY (manager_id) REFERENCES manager (id);
 
 ALTER TABLE specialization ADD FOREIGN KEY (config_id) REFERENCES configuration (id);
 
-ALTER TABLE group ADD FOREIGN KEY (spec_id) REFERENCES specialization (id);
+ALTER TABLE stud_group ADD FOREIGN KEY (spec_id) REFERENCES specialization (id);
 
-ALTER TABLE user ADD FOREIGN KEY (student_id) REFERENCES student (id);
+ALTER TABLE user_account ADD FOREIGN KEY (student_id) REFERENCES student (id);

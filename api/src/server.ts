@@ -2,6 +2,8 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import winston from 'winston';
 import mysql from 'mysql';
+import { AuthService } from './services/auth.service';
+import { AuthController } from './controllers/auth.controller';
 
 // load environment vars
 dotenv.config();
@@ -28,17 +30,17 @@ const winstonLogger = winston.createLogger({
 });
 
 // connect to the database
-var connection: mysql.Connection = mysql.createConnection({
+var dbPool: mysql.Pool = mysql.createPool({
+   connectionLimit : parseInt(process.env.MYSQL_POOL_MAX_SIZE),
    host: process.env.MYSQL_HOST,
    port: parseInt(process.env.MYSQL_PORT) || 3306,
    database: process.env.MYSQL_DB,
    user: process.env.MYSQL_USER,
    password: process.env.MYSQL_PASSWORD,
 });
-connection.connect();
 
 // add logger to the database
-connection.on('enqueue', function (sequence) {
+dbPool.on('enqueue', function (sequence) {
    if ('Query' === sequence.constructor.name) {
       winstonLogger.info(sequence.sql);
    }
@@ -47,17 +49,20 @@ connection.on('enqueue', function (sequence) {
 // init app
 const app = express();
 
+// init services
+const services = new Map<Object, Object>();
+services.set(AuthService.constructor, new AuthService(dbPool));
+
 // add middleware
-// TODO: create auth middleware
+app.use(express.json());
 
-// add routes
-// TODO : create controllers and add routes
-
+// init controllers
+[
+   new AuthController(services)
+].forEach(controller => app.use('/api', controller.router))
+ 
 // start server
 const port = process.env.PORT;
 app.listen(port, () => {
    console.log(`App listening on the port ${port}`);
 });
-
-// on close
-connection.end();

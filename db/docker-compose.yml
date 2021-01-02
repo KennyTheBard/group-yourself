@@ -3,19 +3,21 @@ version: '3.7'
 services:
   db:
     image: mysql:5.7
+    restart: always
     environment:
       MYSQL_DATABASE: 'group-db'
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_ROOT_HOST: '%'
     ports:
       - '3306:3306'
     expose:
       - '3306'
     volumes:
-      - group-db:/var/lib/mysql
+      - data:/var/lib/mysql
       - ./init.sql:/data/application/init.sql
     command: --init-file /data/application/init.sql
 
 volumes:
-  group-db:
+  data:
