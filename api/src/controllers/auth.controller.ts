@@ -16,6 +16,7 @@ export class AuthController {
       this.authService = services.get(AuthService.constructor) as AuthService;
 
       this.router.post(`${this.path}/register`, this.register);
+      this.router.post(`${this.path}/login`, this.login);
    }
 
    /**
@@ -24,6 +25,18 @@ export class AuthController {
    register = async (req: Request, res: Response) => {
       try {
          await this.authService.register(req.body.email, req.body.password);
+         res.status(StatusCodes.CREATED).send();
+      } catch (err) {
+         res.status(401).send(err.message);
+      }
+   }
+
+   /**
+    * POST /auth/login
+    */
+   login = async (req: Request, res: Response) => {
+      try {
+         await this.authService.login(req.body.email, req.body.password);
          res.status(StatusCodes.CREATED).send();
       } catch (err) {
          res.status(401).send(err.message);

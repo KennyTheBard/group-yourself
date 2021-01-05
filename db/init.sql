@@ -3,29 +3,27 @@ use group_db;
 
 CREATE TABLE student (
   id int PRIMARY KEY AUTO_INCREMENT,
-  first_name varchar(255),
-  last_name varchar(255),
-  father_initials varchar(255),
-  high_school varchar(255),
-  town varchar(255),
-  country_code varchar(255),
-  average_score float4,
-  group_id int
+  email varchar(64) NOT NULL,
+  password varchar(32) NOT NULL,
+  full_name varchar(255) NOT NULL,
+  -- average_score float4,
+  group_id int,
+  group_collection_id int
 );
 
 CREATE TABLE group_collection (
   id int PRIMARY KEY AUTO_INCREMENT,
-  name varchar(255),
-  organizer_id int,
-  config_id int
+  name varchar(255) NOT NULL,
+  starting_year int NOT NULL,
+  organizer_id int NOT NULL,
+  config_id int NOT NULL
 );
 
 CREATE TABLE stud_group (
   id int PRIMARY KEY AUTO_INCREMENT,
-  name varchar(255),
-  starting_year int,
+  name varchar(255) NOT NULL,
   collection_id int,
-  max_seats int
+  max_seats int NOT NULL
 );
 
 CREATE TABLE user_account (
@@ -50,10 +48,10 @@ CREATE TABLE configuration (
 
 ALTER TABLE student ADD FOREIGN KEY (group_id) REFERENCES stud_group (id);
 
+ALTER TABLE student ADD FOREIGN KEY (group_collection_id) REFERENCES group_collection (id);
+
 ALTER TABLE group_collection ADD FOREIGN KEY (organizer_id) REFERENCES user (id);
 
 ALTER TABLE group_collection ADD FOREIGN KEY (config_id) REFERENCES configuration (id);
 
 ALTER TABLE stud_group ADD FOREIGN KEY (collection_id) REFERENCES group_collection (id);
-
-ALTER TABLE user_account ADD FOREIGN KEY (student_id) REFERENCES student (id);

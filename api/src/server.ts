@@ -31,12 +31,16 @@ const winstonLogger = winston.createLogger({
 
 // connect to the database
 var dbPool: mysql.Pool = mysql.createPool({
-   connectionLimit : parseInt(process.env.MYSQL_POOL_MAX_SIZE),
+   // database specific
    host: process.env.MYSQL_HOST,
    port: parseInt(process.env.MYSQL_PORT) || 3306,
    database: process.env.MYSQL_DB,
    user: process.env.MYSQL_USER,
    password: process.env.MYSQL_PASSWORD,
+
+   // conncection specific
+   connectionLimit : parseInt(process.env.MYSQL_POOL_MAX_SIZE),
+   debug: true,
 });
 
 // add logger to the database
