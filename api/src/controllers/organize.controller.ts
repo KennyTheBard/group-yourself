@@ -5,6 +5,7 @@ import { StudentService } from '../services/student.service';
 import { CollectionService } from '../services/collection.service';
 import { authorizeAndExtractToken } from '../security/jwt';
 import { InstanceManager } from '../util/instance-manager';
+import { GroupService } from '../services/group.service';
 
 
 export class OrganizeController {
@@ -14,17 +15,21 @@ export class OrganizeController {
 
    private studentService: StudentService;
    private collectionService: CollectionService;
+   private groupService: GroupService;
 
    constructor(
    ) {
       this.studentService = InstanceManager.get(StudentService);
       this.collectionService = InstanceManager.get(CollectionService);
+      this.groupService = InstanceManager.get(GroupService);
 
       this.router.use(authorizeAndExtractToken);
 
       this.router.post(`${this.path}/collection`, this.createCollection);
-      this.router.post(`${this.path}/enroll`, this.enroll);
-      this.router.get(`${this.path}/students/:collectionId`, this.getStudents);
+      this.router.post(`${this.path}/student`, this.enroll);
+      this.router.get(`${this.path}/student/:collectionId`, this.getStudents);
+      this.router.post(`${this.path}/group`, this.addGroup);
+      this.router.get(`${this.path}/group/:collectionId`, this.getGroups);
    }
 
    /**
@@ -38,16 +43,12 @@ export class OrganizeController {
             collectionId
          });
       } catch (err) {
-         if (err.message.includes('ER_DUP_ENTRY')) {
-            res.status(400).send('There is already an account registered on this email address');
-         } else {
-            res.status(400).send(err.message);
-         }
+         res.status(400).send(err.message);
       }
    }
 
    /**
-    * POST /org/enroll
+    * POST /org/student
     */
    enroll = async (req: Request, res: Response) => {
       try {
@@ -59,16 +60,12 @@ export class OrganizeController {
 
          res.status(StatusCodes.CREATED).send();
       } catch (err) {
-         if (err.message.includes('ER_DUP_ENTRY')) {
-            res.status(400).send('There is already an account registered on this email address');
-         } else {
-            res.status(400).send(err.message);
-         }
+         res.status(400).send(err.message);
       }
    }
 
    /**
-    * GET /org/students/:collectionId
+    * GET /org/student/:collectionId
     */
    getStudents = async (req: Request, res: Response) => {
       try {
@@ -76,13 +73,36 @@ export class OrganizeController {
 
          res.status(StatusCodes.OK).send(result);
       } catch (err) {
-         if (err.message.includes('ER_DUP_ENTRY')) {
-            res.status(400).send('There is already an account registered on this email address');
-         } else {
-            res.status(400).send(err.message);
-         }
+         res.status(400).send(err.message);
       }
    }
 
+   /**
+    * POST /org/group
+    */
+   addGroup = async (req: Request, res: Response) => {
+      try {
+         const collectionId = await this.groupService.create(req.body.collectionId, req.body.name, req.body.maxSeats);
+
+         res.status(StatusCodes.CREATED).send({
+            collectionId
+         });
+      } catch (err) {
+         res.status(400).send(err.message);
+      }
+   }
+
+   /**
+    * GET /org/group/:collectionId
+    */
+   getGroups = async (req: Request, res: Response) => {
+      try {
+         const result = await this.groupService.getGroupsForCollection(parseInt(req.params['collectionId']));
+
+         res.status(StatusCodes.OK).send(result);
+      } catch (err) {
+         res.status(400).send(err.message);
+      }
+   }
 
 }

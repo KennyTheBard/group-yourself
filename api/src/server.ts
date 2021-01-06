@@ -8,6 +8,7 @@ import { OrganizeController } from './controllers/organize.controller';
 import { StudentService } from './services/student.service';
 import { CollectionService } from './services/collection.service';
 import { InstanceManager } from './util/instance-manager';
+import { GroupService } from './services/group.service';
 
 // load environment vars
 dotenv.config();
@@ -61,7 +62,7 @@ const app = express();
 InstanceManager.register(new AuthService(dbPool));
 InstanceManager.register(new StudentService(dbPool));
 InstanceManager.register(new CollectionService(dbPool));
-
+InstanceManager.register(new GroupService(dbPool));
 
 // add middleware
 app.use(express.json());

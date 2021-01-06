@@ -1,18 +1,22 @@
+@host = localhost:3000
+@email = test@test.com
+@password = test
+
 ### Register user account
-POST http://localhost:3000/api/auth/register
+POST http://{{host}}/api/auth/register
 Content-Type: application/json
 
 {
-   "email": "test@test.com",
-   "password": "test"
+   "email": "{{email}}",
+   "password": "{{password}}"
 }
 
 
 ### Login into user account
-POST http://localhost:3000/api/auth/login
+POST http://{{host}}/api/auth/login
 Content-Type: application/json
 
 {
-   "email": "test@test.com",
-   "password": "test"
+   "email": "{{email}}",
+   "password": "{{password}}"
 }

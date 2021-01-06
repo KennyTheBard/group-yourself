@@ -1,5 +1,9 @@
+
+@host = localhost:3000
+
+
 ### Create a collection
-POST http://localhost:3000/api/org/collection
+POST http://{{host}}/api/org/collection
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
 
@@ -10,7 +14,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY
 
 
 ### Enroll a single student
-POST http://localhost:3000/api/org/enroll
+POST http://{{host}}/api/org/student
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
 
@@ -22,7 +26,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY
 
 
 ### Enroll multiple students
-POST http://localhost:3000/api/org/enroll
+POST http://{{host}}/api/org/student
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
 
@@ -39,7 +43,26 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY
    ]
 }
 
+
 ### Get all students of a collection
-GET http://localhost:3000/api/org/students/2
+GET http://{{host}}/api/org/student/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
+
+
+### Add a new group to a collection
+POST http://{{host}}/api/org/group
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
+
+{
+   "collectionId": 2,
+   "name": "test",
+   "maxSeats": 20
+}
+
+
+### Get all groups of a collection
+GET http://{{host}}/api/org/group/2
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
