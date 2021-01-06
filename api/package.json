@@ -12,8 +12,10 @@
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.9",
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/mysql": "^2.15.17",
     "@types/q": "^1.5.4",
+    "@types/uuid": "^8.3.0",
     "tslint": "^5.12.1",
     "typescript": "^3.3.3"
   },
@@ -22,9 +24,11 @@
     "dotenv": "^8.2.0",
     "express": "^4.16.4",
     "http-status-codes": "^2.1.4",
+    "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.6",
     "q": "^1.5.1",
+    "uui": "^1.0.7",
     "winston": "^3.3.3"
   }
 }

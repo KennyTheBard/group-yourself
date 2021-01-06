@@ -1,0 +1,45 @@
+### Create a collection
+POST http://localhost:3000/api/org/collection
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
+
+{
+   "name": "test",
+   "startingYear": 2020
+}
+
+
+### Enroll a single student
+POST http://localhost:3000/api/org/enroll
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
+
+{
+   "collectionId": 2,
+   "email": "test@test.com",
+   "fullname": "test"
+}
+
+
+### Enroll multiple students
+POST http://localhost:3000/api/org/enroll
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
+
+{
+   "collectionId": 2,
+   "students": [
+      {
+         "email": "test1@test.com",
+         "fullname": "test"
+      }, {
+         "email": "test2@test.com",
+         "fullname": "test"
+      }
+   ]
+}
+
+### Get all students of a collection
+GET http://localhost:3000/api/org/students/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8

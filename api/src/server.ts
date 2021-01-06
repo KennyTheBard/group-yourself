@@ -4,6 +4,10 @@ import winston from 'winston';
 import mysql from 'mysql';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
+import { OrganizeController } from './controllers/organize.controller';
+import { StudentService } from './services/student.service';
+import { CollectionService } from './services/collection.service';
+import { InstanceManager } from './util/instance-manager';
 
 // load environment vars
 dotenv.config();
@@ -54,15 +58,18 @@ dbPool.on('enqueue', function (sequence) {
 const app = express();
 
 // init services
-const services = new Map<Object, Object>();
-services.set(AuthService.constructor, new AuthService(dbPool));
+InstanceManager.register(new AuthService(dbPool));
+InstanceManager.register(new StudentService(dbPool));
+InstanceManager.register(new CollectionService(dbPool));
+
 
 // add middleware
 app.use(express.json());
 
 // init controllers
 [
-   new AuthController(services)
+   new AuthController(),
+   new OrganizeController()
 ].forEach(controller => app.use('/api', controller.router))
  
 // start server

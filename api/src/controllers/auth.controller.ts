@@ -1,6 +1,8 @@
 import { Request, Response, Router } from 'express';
 import { AuthService } from '../services/auth.service';
 import { StatusCodes } from 'http-status-codes';
+import { generateToken } from '../security/jwt';
+import { InstanceManager } from '../util/instance-manager';
 
 
 export class AuthController {
@@ -11,9 +13,8 @@ export class AuthController {
    private authService: AuthService;
 
    constructor(
-      services: Map<Object, Object>
    ) {
-      this.authService = services.get(AuthService.constructor) as AuthService;
+      this.authService = InstanceManager.get(AuthService);
 
       this.router.post(`${this.path}/register`, this.register);
       this.router.post(`${this.path}/login`, this.login);
@@ -27,7 +28,11 @@ export class AuthController {
          await this.authService.register(req.body.email, req.body.password);
          res.status(StatusCodes.CREATED).send();
       } catch (err) {
-         res.status(401).send(err.message);
+         if (err.message.includes('ER_DUP_ENTRY')) {
+            res.status(400).send('There is already an account registered on this email address');
+         } else {
+            res.status(400).send(err.message);
+         }
       }
    }
 
@@ -36,8 +41,12 @@ export class AuthController {
     */
    login = async (req: Request, res: Response) => {
       try {
-         await this.authService.login(req.body.email, req.body.password);
-         res.status(StatusCodes.CREATED).send();
+         const result = await this.authService.login(req.body.email, req.body.password);
+         if (result) {
+            res.status(StatusCodes.OK).send(await generateToken(result));
+         } else {
+            throw new Error('Incorrect credentials');
+         }
       } catch (err) {
          res.status(401).send(err.message);
       }

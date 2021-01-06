@@ -21,14 +21,14 @@ export class AuthService {
    login = async (email: string, password: string): Promise<any> => {
       const result = await asyncQuery(
          this.db,
-         'SELECT * FROM user_account WHERE email = ? AND password_hash = ?',
+         'SELECT id, email, role FROM user_account WHERE email = ? AND password_hash = ?',
          [
             email,
             password
          ]
       );
 
-      console.log(Object.keys(result[0]));
+      return result[0];
    }
 
 

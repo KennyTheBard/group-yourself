@@ -8,11 +8,11 @@ export const asyncQuery = async (db: Pool, sql: string, values: any[]): Promise<
    db.query(
       sql,
       values,
-      (err, results, _fields) => {
+      (err, result, _fields) => {
          if (err) {
             deferred.reject(err);
          } else {
-            deferred.resolve(results);
+            deferred.resolve(result);
          }
       }
    )
