@@ -1,6 +1,8 @@
 # group-yourself
 
-### Run instruction
+## Back-End
+
+### Run instructions
 
 * Start database container:
 ```bash
@@ -19,3 +21,7 @@ npm run watch
 # in /api
 npm run start
 ```
+
+### Usage
+
+All requests will be send to localhost:3000/api. For usage examples you can check the `/api/http_example` directory. Those are example requests, but can be used easily with Visual Studio Code http client.
