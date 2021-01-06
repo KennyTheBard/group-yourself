@@ -14,7 +14,7 @@ docker-compose up -d
 npm run watch
 ```
 
-* Run resulted code with nodemon (in another console or temrinal tab):
+* Run resulted code with nodemon (in another console or terminal tab):
 ```bash
 # in /api
 npm run start
