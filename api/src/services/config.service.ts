@@ -1,6 +1,5 @@
-import { Pool } from 'mysql';
+import { Pool } from 'promise-mysql';
 import { CompletionStrategy } from '../models/completion-strategy';
-import { asyncQuery } from '../util/async-query';
 
 
 export class ConfigService {
@@ -10,8 +9,7 @@ export class ConfigService {
    ) { }
 
    getByCollectionId = async (collectionId: number): Promise<any> => {
-      return await asyncQuery(
-         this.db,
+      return await this.db.query(
          'SELECT c.join_allowed, c.completion_strategy FROM configuration c ' +
          'JOIN group_collection gc ON gc.config_id = c.id ' +
          'WHERE gc.id = ?',
@@ -22,8 +20,7 @@ export class ConfigService {
    }
 
    update = async (collectionId: number, joinAllowed: boolean, strategy: CompletionStrategy) => {
-      await asyncQuery(
-         this.db,
+      await this.db.query(
          'UPDATE configuration c JOIN group_collection gc ON gc.config_id = c.id ' +
          'SET c.join_allowed = ?, c.completion_strategy = ? ' +
          'WHERE gc.id = ?',

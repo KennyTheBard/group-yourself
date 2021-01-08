@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { ServerError } from '../errors/server-error';
-import { User } from '../models/user';
+import { UserAccount } from '../models/user-account';
+import { StudentAccount } from '../models/student-account';
 
 
 export const generateToken = async (payload: object) => {
@@ -24,13 +25,32 @@ const verifyAndDecodeData = async (token: string) => {
     }
 };
 
-export const authorizeAndExtractToken = async (req: Request, res: Response, next: () => void) => {
+export const authorizeAndExtractUserToken = async (req: Request, res: Response, next: () => void) => {
     if (!req.headers.authorization) {
         res.status(403).send('Authorization header is missing');
     }
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization.split("Bearer ")[1];
 
-    req.user = await verifyAndDecodeData(token) as User;
+    req.user = await verifyAndDecodeData(token) as UserAccount;
+
+    next();
+};
+
+const encodeBase64 = (value: string): string => {  
+    return Buffer.from(value, 'utf8').toString('base64'); 
+}
+
+const decodeBase64 = (value: string): string => {  
+    return Buffer.from(value, 'base64').toString('utf8'); 
+}
+
+export const authorizeAndExtractStudentToken = async (req: Request, res: Response, next: () => void) => {
+    if (!req.headers.authorization) {
+        res.status(403).send('Authorization header is missing');
+    }
+    const token = req.headers.authorization.split("Student ")[1];
+
+    req.user = JSON.parse(decodeBase64(token)) as StudentAccount;
 
     next();
 };

@@ -1,82 +1,87 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import winston from 'winston';
-import mysql from 'mysql';
+import mysql from 'promise-mysql';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
-import { OrganizeController } from './controllers/organize.controller';
+import { OrganizerController } from './controllers/organizer.controller';
 import { StudentService } from './services/student.service';
 import { CollectionService } from './services/collection.service';
 import { InstanceManager } from './util/instance-manager';
 import { GroupService } from './services/group.service';
 import { ConfigService } from './services/config.service';
 
-// load environment vars
-dotenv.config();
+const init = async () => {
 
-// configure logger
-const winstonLogger = winston.createLogger({
-   level: 'debug',
-   format: winston.format.combine(
-      winston.format.timestamp({
-         format: 'YYYY-MM-DD HH:mm:ss',
-      }),
-      winston.format((info) => {
-         info.message = `[${(info.level as string).toUpperCase()}] ${info.timestamp} : ${info.message}`;
+   // load environment vars
+   dotenv.config();
 
-         return info;
-      })(),
-   ),
-   defaultMeta: { service: 'user-service' },
-   transports: [
-      new winston.transports.Console({
-         format: winston.format.printf(info => `${info.message}`)
-      }),
-   ],
-});
+   // configure logger
+   const winstonLogger = winston.createLogger({
+      level: 'debug',
+      format: winston.format.combine(
+         winston.format.timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss',
+         }),
+         winston.format((info) => {
+            info.message = `[${(info.level as string).toUpperCase()}] ${info.timestamp} : ${info.message}`;
 
-// connect to the database
-var dbPool: mysql.Pool = mysql.createPool({
-   // database specific
-   host: process.env.MYSQL_HOST,
-   port: parseInt(process.env.MYSQL_PORT) || 3306,
-   database: process.env.MYSQL_DB,
-   user: process.env.MYSQL_USER,
-   password: process.env.MYSQL_PASSWORD,
+            return info;
+         })(),
+      ),
+      defaultMeta: { service: 'user-service' },
+      transports: [
+         new winston.transports.Console({
+            format: winston.format.printf(info => `${info.message}`)
+         }),
+      ],
+   });
 
-   // conncection specific
-   connectionLimit : parseInt(process.env.MYSQL_POOL_MAX_SIZE),
-   debug: true,
-});
+   // connect to the database
+   var dbPool: mysql.Pool = await mysql.createPool({
+      // database specific
+      host: process.env.MYSQL_HOST,
+      port: parseInt(process.env.MYSQL_PORT) || 3306,
+      database: process.env.MYSQL_DB,
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
 
-// add logger to the database
-dbPool.on('enqueue', function (sequence) {
-   if ('Query' === sequence.constructor.name) {
-      winstonLogger.info(sequence.sql);
-   }
-});
+      // conncection specific
+      connectionLimit: parseInt(process.env.MYSQL_POOL_MAX_SIZE),
+      debug: true,
+   });
 
-// init app
-const app = express();
+   // add logger to the database
+   dbPool.on('enqueue', function (sequence) {
+      if ('Query' === sequence.constructor.name) {
+         winstonLogger.info(sequence.sql);
+      }
+   });
 
-// init services
-InstanceManager.register(new AuthService(dbPool));
-InstanceManager.register(new StudentService(dbPool));
-InstanceManager.register(new CollectionService(dbPool));
-InstanceManager.register(new GroupService(dbPool));
-InstanceManager.register(new ConfigService(dbPool));
+   // init app
+   const app = express();
 
-// add middleware
-app.use(express.json());
+   // init services
+   InstanceManager.register(new AuthService(dbPool));
+   InstanceManager.register(new StudentService(dbPool));
+   InstanceManager.register(new CollectionService(dbPool));
+   InstanceManager.register(new GroupService(dbPool));
+   InstanceManager.register(new ConfigService(dbPool));
 
-// init controllers
-[
-   new AuthController(),
-   new OrganizeController()
-].forEach(controller => app.use('/api', controller.router))
- 
-// start server
-const port = process.env.PORT;
-app.listen(port, () => {
-   console.log(`App listening on the port ${port}`);
-});
+   // add middleware
+   app.use(express.json());
+
+   // init controllers
+   [
+      new AuthController(),
+      new OrganizerController()
+   ].forEach(controller => app.use('/api', controller.router))
+
+   // start server
+   const port = process.env.PORT;
+   app.listen(port, () => {
+      console.log(`App listening on the port ${port}`);
+   });
+};
+
+init();

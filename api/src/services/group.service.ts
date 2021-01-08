@@ -1,5 +1,4 @@
-import { Pool } from 'mysql';
-import { asyncQuery } from '../util/async-query';
+import { Pool } from 'promise-mysql';
 
 
 export class GroupService {
@@ -9,8 +8,7 @@ export class GroupService {
    ) { }
 
    create = async (collectionId: number, name: string, maxSeats: number): Promise<any> => {
-      return (await asyncQuery(
-         this.db,
+      return (await this.db.query(
          `INSERT INTO stud_group (collection_id, name, max_seats) ` +
          `VALUES ?`,
          [
@@ -26,8 +24,7 @@ export class GroupService {
    }
 
    getGroupsForCollection = async (collectionId: number): Promise<any> => {
-      return await asyncQuery(
-         this.db,
+      return await this.db.query(
          `SELECT id, name, starting_year FROM stud_group WHERE collection_id = ?`,
          [
             collectionId

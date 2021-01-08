@@ -1,5 +1,4 @@
-import { Pool } from 'mysql';
-import { asyncQuery } from '../util/async-query';
+import { Pool } from 'promise-mysql';
 import { CompletionStrategy } from '../models/completion-strategy';
 
 
@@ -10,8 +9,7 @@ export class CollectionService {
    ) { }
 
    create = async (name: string, startingYear: number, ownerId: number): Promise<any> => {
-      const config = await asyncQuery(
-         this.db,
+      const config = await this.db.query(
          `INSERT INTO configuration (join_allowed, completion_strategy) ` +
          `VALUES ?`,
          [
@@ -24,8 +22,7 @@ export class CollectionService {
          ]
       );
 
-      return (await asyncQuery(
-         this.db,
+      return (await this.db.query(
          `INSERT INTO group_collection (name, starting_year, owner_id, config_id) ` +
          `VALUES ?`,
          [
@@ -42,8 +39,7 @@ export class CollectionService {
    }
 
    getAll = async (ownerId: number): Promise<any> => {
-      return await asyncQuery(
-         this.db,
+      return await this.db.query(
          `SELECT * FROM group_collection WHERE owner_id = ?`,
          [
             ownerId

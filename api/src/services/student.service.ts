@@ -1,5 +1,4 @@
-import { Pool } from 'mysql';
-import { asyncQuery } from '../util/async-query';
+import { Connection, MysqlError, Pool, PoolConnection } from 'promise-mysql';
 import { v4 as uuid } from 'uuid';
 
 
@@ -10,8 +9,7 @@ export class StudentService {
    ) { }
 
    enrollStudent = async (collectionId: number, email: string, fullname: string): Promise<any> => {
-      return await asyncQuery(
-         this.db,
+      return await this.db.query(
          `INSERT INTO student (uuid_code, email, full_name, group_collection_id) ` +
          `VALUES ?`,
          [
@@ -28,8 +26,7 @@ export class StudentService {
    }
 
    enrollStudents = async (collectionId: number, students: Record<string, string>[]): Promise<any> => {
-      return await asyncQuery(
-         this.db,
+      return await this.db.query(
          `INSERT INTO student (uuid_code, email, full_name, group_collection_id) ` +
          `VALUES ?`,
          [
@@ -44,13 +41,46 @@ export class StudentService {
    }
 
    getStudentsForCollection = async (collectionId: number): Promise<any> => {
-      return await asyncQuery(
-         this.db,
+      return await this.db.query(
          `SELECT * FROM student WHERE group_collection_id = ?`,
          [
             collectionId
          ]
       )
    }
+
+   enrollInGroup = async (studentId: number, studentUuidCode: string, groupId: number): Promise<any> => {
+      // const result = await asyncGetConnection(this.db);
+      // const err = result as MysqlError;
+      // const connection = result as Connection;
+
+      // if (err.errno) {
+      //    throw new Error(err.sqlMessage)
+      // }
+
+      // await (async () => {
+      //    const deferred = q.defer<any>();
+
+      //    // execute enrollment logic in transaction
+      //    connection.beginTransaction((err) => {
+      //       if (err) {
+      //          deferred.reject(err);
+      //       }
+            
+      //       await asyncQuery(
+      //          connection,
+      //          '',
+      //          [
+
+      //          ]
+      //       )
+            
+      //       deferred.resolve(connection);
+      //    });
+   
+      //    return deferred.promise;
+      // })();
+   }
+   
 
 }

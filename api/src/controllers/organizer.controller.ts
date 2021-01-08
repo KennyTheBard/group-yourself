@@ -1,15 +1,14 @@
 import { Request, Response, Router } from 'express';
-import { AuthService } from '../services/auth.service';
 import { StatusCodes } from 'http-status-codes';
 import { StudentService } from '../services/student.service';
 import { CollectionService } from '../services/collection.service';
-import { authorizeAndExtractToken } from '../security/jwt';
+import { authorizeAndExtractUserToken } from '../security/jwt';
 import { InstanceManager } from '../util/instance-manager';
 import { GroupService } from '../services/group.service';
 import { ConfigService } from '../services/config.service';
 
 
-export class OrganizeController {
+export class OrganizerController {
 
    public path = '/org';
    public router = Router();
@@ -26,7 +25,7 @@ export class OrganizeController {
       this.groupService = InstanceManager.get(GroupService);
       this.configService = InstanceManager.get(ConfigService);
 
-      this.router.use(authorizeAndExtractToken);
+      this.router.use(authorizeAndExtractUserToken);
 
       this.router.post(`${this.path}/collection`, this.createCollection);
       this.router.get(`${this.path}/collection`, this.getCollections);
