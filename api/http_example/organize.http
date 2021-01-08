@@ -13,6 +13,30 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY
 }
 
 
+### Retrieve your collections
+GET http://{{host}}/api/org/collection
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
+
+
+### Update configurations for a collection
+PUT http://{{host}}/api/org/config
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
+
+{
+   "collectionId": 2,
+   "joinAllowed": true,
+   "strategy": "UNIFORM_SCORE"
+}
+
+
+### Retrieve configuration for a collection
+GET http://{{host}}/api/org/config/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
+
+
 ### Enroll a single student
 POST http://{{host}}/api/org/student
 Content-Type: application/json

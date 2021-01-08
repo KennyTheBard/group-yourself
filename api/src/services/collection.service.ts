@@ -1,6 +1,5 @@
 import { Pool } from 'mysql';
 import { asyncQuery } from '../util/async-query';
-import { v4 as uuid } from 'uuid';
 import { CompletionStrategy } from '../models/completion-strategy';
 
 
@@ -40,6 +39,16 @@ export class CollectionService {
          ]
       ]
       )).insertId;
+   }
+
+   getAll = async (ownerId: number): Promise<any> => {
+      return await asyncQuery(
+         this.db,
+         `SELECT * FROM group_collection WHERE owner_id = ?`,
+         [
+            ownerId
+         ]
+      )
    }
 
 }

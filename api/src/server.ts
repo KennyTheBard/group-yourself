@@ -9,6 +9,7 @@ import { StudentService } from './services/student.service';
 import { CollectionService } from './services/collection.service';
 import { InstanceManager } from './util/instance-manager';
 import { GroupService } from './services/group.service';
+import { ConfigService } from './services/config.service';
 
 // load environment vars
 dotenv.config();
@@ -63,6 +64,7 @@ InstanceManager.register(new AuthService(dbPool));
 InstanceManager.register(new StudentService(dbPool));
 InstanceManager.register(new CollectionService(dbPool));
 InstanceManager.register(new GroupService(dbPool));
+InstanceManager.register(new ConfigService(dbPool));
 
 // add middleware
 app.use(express.json());

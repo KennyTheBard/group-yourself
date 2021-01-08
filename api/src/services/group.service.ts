@@ -28,7 +28,7 @@ export class GroupService {
    getGroupsForCollection = async (collectionId: number): Promise<any> => {
       return await asyncQuery(
          this.db,
-         `SELECT * FROM stud_group WHERE collection_id = ?`,
+         `SELECT id, name, starting_year FROM stud_group WHERE collection_id = ?`,
          [
             collectionId
          ]
