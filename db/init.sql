@@ -23,7 +23,8 @@ CREATE TABLE stud_group (
   id int PRIMARY KEY AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   collection_id int,
-  max_seats int NOT NULL
+  max_seats int NOT NULL,
+  occupied_seats int NOT NULL
 );
 
 CREATE TABLE user_account (

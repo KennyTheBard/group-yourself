@@ -50,37 +50,80 @@ export class StudentService {
    }
 
    enrollInGroup = async (studentId: number, studentUuidCode: string, groupId: number): Promise<any> => {
-      // const result = await asyncGetConnection(this.db);
-      // const err = result as MysqlError;
-      // const connection = result as Connection;
+      const connection = await this.db.getConnection();
 
-      // if (err.errno) {
-      //    throw new Error(err.sqlMessage)
-      // }
+      await connection.beginTransaction();
 
-      // await (async () => {
-      //    const deferred = q.defer<any>();
+      try {
+         // lock current student (just in case it has multiple tabs)
+         const student = await connection.query(
+            'SELECT * FROM student WHERE id = ? AND uuid_code = ? FOR UPDATE',
+            [
+               studentId,
+               studentUuidCode
+            ]
+         );
 
-      //    // execute enrollment logic in transaction
-      //    connection.beginTransaction((err) => {
-      //       if (err) {
-      //          deferred.reject(err);
-      //       }
-            
-      //       await asyncQuery(
-      //          connection,
-      //          '',
-      //          [
+         if (student.length === 0) {
+            throw new Error('Incorrect student credentials');
+         }
 
-      //          ]
-      //       )
-            
-      //       deferred.resolve(connection);
-      //    });
-   
-      //    return deferred.promise;
-      // })();
+         if (student.group_id === groupId) {
+            throw new Error('Student already enrolled in this group');
+         }
+
+         // lock choosen group and current group if it exists
+         const groups = await connection.query(
+            'SELECT * FROM stud_group WHERE id IN ? FOR UPDATE',
+            [
+               [student.group_id, groupId].filter(id => !!id)
+            ]
+         )
+         const choosenGroup = groups.filter(g => g.id === groupId)[0];
+         const currentGroup = groups.filter(g => g.id === student.group_id)[0];
+
+         if (choosenGroup.occupied_seats >= choosenGroup.max_seats) {
+            throw new Error('Group already at maximum capacity');
+         }
+
+         // update counter for current group if exists
+         if (currentGroup) {
+            await connection.query(
+               'UPDATE stud_group SET occupied_seats = ? WHERE id = ?',
+               [
+                  currentGroup.occupied_seats - 1,
+                  student.group_id
+               ]
+            )
+         }
+
+         // update counter for choosen group
+         await connection.query(
+            'UPDATE stud_group SET occupied_seats = ? WHERE id = ?',
+            [
+               choosenGroup.occupied_seats + 1,
+               groupId
+            ]
+         )
+         
+
+         // update student group id
+         await connection.query(
+            'UPDATE student SET group_id = ? WHERE id = ?',
+            [
+               groupId,
+               student.group_id
+            ]
+         )
+
+         connection.commit();
+
+      } catch (err) {
+         connection.rollback();
+         throw new Error(err.message);
+      }
+
    }
-   
+
 
 }

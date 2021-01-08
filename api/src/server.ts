@@ -10,6 +10,7 @@ import { CollectionService } from './services/collection.service';
 import { InstanceManager } from './util/instance-manager';
 import { GroupService } from './services/group.service';
 import { ConfigService } from './services/config.service';
+import { StudentController } from './controllers/student.controller';
 
 const init = async () => {
 
@@ -74,7 +75,8 @@ const init = async () => {
    // init controllers
    [
       new AuthController(),
-      new OrganizerController()
+      new OrganizerController(),
+      new StudentController()
    ].forEach(controller => app.use('/api', controller.router))
 
    // start server

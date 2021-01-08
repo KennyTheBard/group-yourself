@@ -6,7 +6,7 @@ import { InstanceManager } from '../util/instance-manager';
 import { StudentAccount } from '../models/student-account';
 
 
-export class OrganizerController {
+export class StudentController {
 
    public path = '/stud';
    public router = Router();

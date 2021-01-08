@@ -9,14 +9,15 @@ export class GroupService {
 
    create = async (collectionId: number, name: string, maxSeats: number): Promise<any> => {
       return (await this.db.query(
-         `INSERT INTO stud_group (collection_id, name, max_seats) ` +
-         `VALUES ?`,
+         'INSERT INTO stud_group (collection_id, name, max_seats, occupied_seats) ' +
+         'VALUES ?',
          [
             [
                [
                   collectionId,
                   name,
-                  maxSeats
+                  maxSeats,
+                  0
                ]
             ]
          ]
@@ -25,7 +26,8 @@ export class GroupService {
 
    getGroupsForCollection = async (collectionId: number): Promise<any> => {
       return await this.db.query(
-         `SELECT id, name, starting_year FROM stud_group WHERE collection_id = ?`,
+         'SELECT id, name, occupied_seats, max_seats ' +
+         'FROM stud_group WHERE collection_id = ?',
          [
             collectionId
          ]
