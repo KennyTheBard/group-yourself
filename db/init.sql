@@ -16,7 +16,13 @@ CREATE TABLE group_collection (
   name varchar(255) NOT NULL,
   starting_year int NOT NULL,
   owner_id int NOT NULL,
-  config_id int NOT NULL
+  join_allowed BOOLEAN,
+  completion_strategy ENUM (
+    'RANDOM',
+    'KEEP_AVERAGE_SCORE',
+    'UNIFORM_SCORE',
+    'SORTED_SCORE'
+  )
 );
 
 CREATE TABLE stud_group (
@@ -34,20 +40,11 @@ CREATE TABLE user_account (
   role ENUM ('organizer', 'admin')
 );
 
--- todo: move this in group collection
-CREATE TABLE configuration (
-  id int PRIMARY KEY AUTO_INCREMENT,
-  join_allowed BOOLEAN,
-  completion_strategy ENUM ('RANDOM', 'KEEP_AVERAGE_SCORE', 'UNIFORM_SCORE', 'SORTED_SCORE')
-);
-
 ALTER TABLE student ADD FOREIGN KEY (group_id) REFERENCES stud_group (id);
 
 ALTER TABLE student ADD FOREIGN KEY (group_collection_id) REFERENCES group_collection (id);
 
 ALTER TABLE group_collection ADD FOREIGN KEY (owner_id) REFERENCES user (id);
-
-ALTER TABLE group_collection ADD FOREIGN KEY (config_id) REFERENCES configuration (id);
 
 ALTER TABLE stud_group ADD FOREIGN KEY (collection_id) REFERENCES group_collection (id);
 

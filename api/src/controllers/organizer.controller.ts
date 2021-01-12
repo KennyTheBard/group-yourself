@@ -71,6 +71,7 @@ export class OrganizerController {
       try {
          await this.configService.update(
             req.body.collectionId,
+            req.user.id,
             req.body.joinAllowed,
             req.body.strategy
          );
@@ -87,7 +88,7 @@ export class OrganizerController {
     */
    getCollectionConfig = async (req: Request, res: Response) => {
       try {
-         const result = await this.configService.getByCollectionId(
+         const result = await this.configService.getById(
             parseInt(req.params['collectionId'])
          );
 
