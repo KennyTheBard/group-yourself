@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import winston from 'winston';
 import mysql from 'promise-mysql';
+import * as nodemailer from 'nodemailer';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { OrganizerController } from './controllers/organizer.controller';
@@ -11,6 +12,7 @@ import { InstanceManager } from './util/instance-manager';
 import { GroupService } from './services/group.service';
 import { ConfigService } from './services/config.service';
 import { StudentController } from './controllers/student.controller';
+import { MailService } from './services/mail.service';
 
 const init = async () => {
 
@@ -59,6 +61,15 @@ const init = async () => {
       }
    });
 
+   // create a SMTP transport with gmail credentials
+   const smtpTransport = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+          user: process.env.GMAIL_USERNAME,
+          pass: process.env.GMAIL_PASSWORD
+      }
+  });
+
    // init app
    const app = express();
 
@@ -68,6 +79,7 @@ const init = async () => {
    InstanceManager.register(new CollectionService(dbPool));
    InstanceManager.register(new GroupService(dbPool));
    InstanceManager.register(new ConfigService(dbPool));
+   InstanceManager.register(new MailService(smtpTransport));
 
    // add middleware
    app.use(express.json());
