@@ -36,21 +36,16 @@ export const authorizeAndExtractUserToken = async (req: Request, res: Response, 
     next();
 };
 
-const encodeBase64 = (value: string): string => {  
-    return Buffer.from(value, 'utf8').toString('base64'); 
-}
-
-const decodeBase64 = (value: string): string => {  
-    return Buffer.from(value, 'base64').toString('utf8'); 
-}
-
 export const authorizeAndExtractStudentToken = async (req: Request, res: Response, next: () => void) => {
     if (!req.headers.authorization) {
         res.status(403).send('Authorization header is missing');
     }
-    const token = req.headers.authorization.split("Student ")[1];
+    const parts = req.headers.authorization.split(' ');
 
-    req.user = JSON.parse(decodeBase64(token)) as StudentAccount;
+    req.user = {
+        id: parseInt(parts[1]),
+        uuidCode: parts[1]
+    } as StudentAccount;
 
     next();
 };

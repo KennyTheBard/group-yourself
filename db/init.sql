@@ -31,15 +31,10 @@ CREATE TABLE user_account (
   id int PRIMARY KEY AUTO_INCREMENT,
   email varchar(255) UNIQUE,
   password_hash varchar(255),
-  role ENUM ('student', 'organizer', 'admin')
+  role ENUM ('organizer', 'admin')
 );
 
-CREATE TABLE manager (
-  id int PRIMARY KEY AUTO_INCREMENT,
-  email varchar(255),
-  password_hash varchar(255)
-);
-
+-- todo: move this in group collection
 CREATE TABLE configuration (
   id int PRIMARY KEY AUTO_INCREMENT,
   join_allowed BOOLEAN,
@@ -55,3 +50,4 @@ ALTER TABLE group_collection ADD FOREIGN KEY (owner_id) REFERENCES user (id);
 ALTER TABLE group_collection ADD FOREIGN KEY (config_id) REFERENCES configuration (id);
 
 ALTER TABLE stud_group ADD FOREIGN KEY (collection_id) REFERENCES group_collection (id);
+
