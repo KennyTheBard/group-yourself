@@ -25,3 +25,12 @@ npm run start
 ### Usage
 
 All requests will be send to localhost:3000/api. For usage examples you can check the `/api/http_example` directory. Those are example requests, but can be used easily with Visual Studio Code http client.
+
+
+## Todo
+
+- [ ] Create gmail account and use it with nodemailer into a MailService (please take into consideration that you will have to allow the account to be used by a non trusted app)
+- [ ] Start a front end project in the `/ui` directory (react, Angular or Vue)
+- [ ] Use `ws` to establish connection with front end client
+- [ ] Create a `cronjob` that triggers updates and notifications for each group collection
+- [ ] Write a script that will stress test the row locking mechanism of the enrollment endpoint
