@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
+import * as nodemailer from 'nodemailer';
 import express from 'express';
 import winston from 'winston';
 import mysql from 'promise-mysql';
-import * as nodemailer from 'nodemailer';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { OrganizerController } from './controllers/organizer.controller';
@@ -13,6 +13,8 @@ import { GroupService } from './services/group.service';
 import { ConfigService } from './services/config.service';
 import { StudentController } from './controllers/student.controller';
 import { MailService } from './services/mail.service';
+import { WebsocketService } from './services/websocket.service';
+import expressWs from 'express-ws';
 
 const init = async () => {
 
@@ -65,13 +67,15 @@ const init = async () => {
    const smtpTransport = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-          user: process.env.GMAIL_USERNAME,
-          pass: process.env.GMAIL_PASSWORD
+         user: process.env.GMAIL_USERNAME,
+         pass: process.env.GMAIL_PASSWORD
       }
-  });
+   });
 
-   // init app
-   const app = express();
+   // init app with an websocket server
+   const { app, getWss, applyTo } = expressWs(express());
+   const router = express.Router() as expressWs.Router;
+   app.use('/', router);
 
    // init services
    InstanceManager.register(new AuthService(dbPool));
@@ -80,6 +84,7 @@ const init = async () => {
    InstanceManager.register(new GroupService(dbPool));
    InstanceManager.register(new ConfigService(dbPool));
    InstanceManager.register(new MailService(smtpTransport));
+   InstanceManager.register(new WebsocketService(router));
 
    // add middleware
    app.use(express.json());
