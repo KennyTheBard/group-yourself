@@ -1,8 +1,10 @@
 import * as dotenv from 'dotenv';
 import * as nodemailer from 'nodemailer';
+import * as cron from 'node-cron';
 import express from 'express';
 import winston from 'winston';
 import mysql from 'promise-mysql';
+import expressWs from 'express-ws';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { OrganizerController } from './controllers/organizer.controller';
@@ -14,7 +16,7 @@ import { ConfigService } from './services/config.service';
 import { StudentController } from './controllers/student.controller';
 import { MailService } from './services/mail.service';
 import { WebsocketService } from './services/websocket.service';
-import expressWs from 'express-ws';
+import { RealTimeService } from './services/real-time.service';
 
 const init = async () => {
 
@@ -85,6 +87,7 @@ const init = async () => {
    InstanceManager.register(new ConfigService(dbPool));
    InstanceManager.register(new MailService(smtpTransport));
    InstanceManager.register(new WebsocketService(router));
+   const realTimeService = InstanceManager.register(new RealTimeService(dbPool));
 
    // add middleware
    app.use(express.json());
@@ -95,6 +98,11 @@ const init = async () => {
       new OrganizerController(),
       new StudentController()
    ].forEach(controller => app.use('/api', controller.router))
+
+   // schedule the task to update subscribers
+   cron.schedule('*/5 * * * * *', () => {
+      realTimeService.updateSubscribers();
+   });
 
    // start server
    const port = process.env.PORT;
