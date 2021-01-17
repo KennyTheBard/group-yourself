@@ -25,7 +25,7 @@ export class AuthService {
          ]
       );
 
-      return result[0];
+      return result;
    }
 
 

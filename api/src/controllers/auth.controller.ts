@@ -42,8 +42,8 @@ export class AuthController {
    login = async (req: Request, res: Response) => {
       try {
          const result = await this.authService.login(req.body.email, req.body.password);
-         if (result) {
-            res.status(StatusCodes.OK).send(await generateToken(result));
+         if (result.length) {
+            res.status(StatusCodes.OK).send(await generateToken(result[0]));
          } else {
             throw new Error('Incorrect credentials');
          }

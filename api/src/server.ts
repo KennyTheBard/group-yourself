@@ -5,6 +5,7 @@ import express from 'express';
 import winston from 'winston';
 import mysql from 'promise-mysql';
 import expressWs from 'express-ws';
+import cors from 'cors';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { OrganizerController } from './controllers/organizer.controller';
@@ -55,7 +56,7 @@ const init = async () => {
 
       // conncection specific
       connectionLimit: parseInt(process.env.MYSQL_POOL_MAX_SIZE),
-      debug: true,
+      debug: process.env.ENABLE_DB_DEBUG === 'true',
    });
 
    // add logger to the database
@@ -91,6 +92,7 @@ const init = async () => {
 
    // add middleware
    app.use(express.json());
+   app.use(cors());
 
    // init controllers
    [
