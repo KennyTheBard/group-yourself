@@ -2,7 +2,6 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import * as H from 'history';
 import { AlertType } from '../alert/Alert.component';
-import WebSocket from 'ws';
 import axios from 'axios';
 import { AxiosError } from '../utils/axios-error';
 import config from '../utils/config';
@@ -15,30 +14,32 @@ export interface OrganizerSettingProps extends RouteComponentProps<{
    history: H.History;
 }
 
+interface Student {
+   name: string;
+   email: string;
+}
+
+interface Group {
+   id: number;
+   name: string;
+   maxSeats: number;
+   occupiedSeats: number;
+   students: Student[];
+}
+
+interface CollectionData {
+   unseatedStudents: string[];
+   joinAllowed: boolean;
+   groups: Group[];
+}
+
 export default class OrganizerSetting extends React.Component<OrganizerSettingProps, any> {
 
    state = {
       collectionId: 0,
       studentId: 0,
       studentCode: '',
-      data: {
-         unseatedStudents: [],
-         joinAllowed: false,
-         groups: [
-            {
-               id: 0,
-               name: '',
-               maxSeats: 0,
-               occupiedSeats: 0,
-               students: [
-                  {
-                     name: '',
-                     email: ''
-                  }
-               ]
-            }
-         ]
-      }
+      data: {} as CollectionData
    };
 
    constructor(props: OrganizerSettingProps) {
@@ -49,28 +50,36 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
       const query = new URLSearchParams(this.props.location.search);
       this.state.studentId = parseInt(query.get('id') || '0');
       this.state.studentCode = query.get('code') || '';
-
-      const ws = new WebSocket(`${config.SOCKET_URL}/socket?` +
-         `groupCollectionId=${this.state.collectionId}&studentId=${this.state.studentId}`, {
-         perMessageDeflate: false
-      });
-
-      const that = this;
-      ws.on('message', function incoming(data) {
-         console.log(data);
-         that.setState({ data })
-      });
    }
 
    componentDidMount() {
       if (!localStorage.getItem('token')) {
          this.props.history.push('/')
       }
+
+      const ws = new WebSocket(`${config.SOCKET_URL}?` +
+         `groupCollectionId=${this.state.collectionId}&studentId=${this.state.studentId}`);
+
+
+      ws.onopen = () => {
+         console.log('connected');
+      }
+
+      const that = this;
+      ws.onmessage = (event) => {
+         console.log(event.data);
+         that.setState({ data: event.data });
+      };
+
+      ws.onclose = () => {
+         console.log('disconnected');
+
+      }
    }
 
    toggleJoinAllowedForGroup(collectionId: number, active: boolean) {
       return (e: React.MouseEvent<HTMLButtonElement>) => {
-         axios.put(config.SERVER_URL + '/org/config', {
+         axios.put(`${config.SERVER_URL}/org/config`, {
             collectionId,
             joinAllowed: active,
             strategy: 'RANDOM'
@@ -91,7 +100,7 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
       return (
          <div>
             <div>
-               {this.state.data.groups.map((g) => {
+               {this.state.data.groups && this.state.data.groups.map((g) => {
                   return (
                      <div>
                         <p>

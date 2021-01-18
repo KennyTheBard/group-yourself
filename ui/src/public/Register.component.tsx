@@ -24,10 +24,6 @@ export default class RegisterComponent extends React.Component<RegisterProps, an
       }
    }
 
-   onChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.setState({ username: e.target.value })
-   }
-
    onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
       this.setState({ email: e.target.value })
    }
@@ -49,10 +45,8 @@ export default class RegisterComponent extends React.Component<RegisterProps, an
       }
 
       axios.post(config.SERVER_URL + '/auth/register', {
-         username: this.state.username,
          email: this.state.email,
          password: this.state.password,
-         repassword: this.state.repassword
       })
          .then(() => {
             this.props.alert('success', 'You have been registered!');
@@ -69,10 +63,6 @@ export default class RegisterComponent extends React.Component<RegisterProps, an
                <legend>Sign in</legend>
 
                <form onSubmit={this.onSubmit}>
-                  <div className='form-group'>
-                     <label>Username</label>
-                     <input type='text' value={this.state.username} onChange={this.onChangeUsername} className='form-control' />
-                  </div>
                   <div className='form-group'>
                      <label>Email</label>
                      <input type='text' value={this.state.email} onChange={this.onChangeEmail} className='form-control' />

@@ -38,6 +38,7 @@
     "nodemon": "^2.0.6",
     "promise-mysql": "^5.0.1",
     "uuid": "^1.0.7",
+    "websocket": "^1.0.33",
     "winston": "^3.3.3",
     "ws": "^7.4.2"
   }

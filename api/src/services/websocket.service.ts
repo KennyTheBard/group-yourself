@@ -1,5 +1,7 @@
 import expressWs from 'express-ws';
 import * as ws from 'ws';
+import * as http from 'http';
+import * as url from 'url';
 
 interface Subscriber {
    id: number;
@@ -13,9 +15,12 @@ export class WebsocketService {
    constructor(
       private readonly router: expressWs.Router,
    ) {
-      router.ws('/socket', (ws: ws, req) => {
-         const groupCollectionId = parseInt(req.query['groupCollectionId'] as string);
-         const studentId = parseInt(req.query['studentId'] as string);
+      this.router.ws('/socket', (ws: ws, req: http.IncomingMessage) => {
+         console.log(`New connection`);
+
+         const query = url.parse(req.url, true).query;
+         const groupCollectionId = parseInt(query.groupCollectionId as string);
+         const studentId = parseInt(query.studentId as string);
 
          if (!this.subs.has(groupCollectionId)) {
             this.subs.set(groupCollectionId, []);
@@ -25,7 +30,16 @@ export class WebsocketService {
             ws
          });
 
+         ws.on('upgrade', (req) => {
+            console.log(req);
+         });
+
+         ws.on('error', (err) => {
+            console.log(err);
+         });
+
          ws.on('close', () => {
+            console.log(`Connection closed`);
             this.subs.set(
                groupCollectionId,
                this.subs.get(groupCollectionId).filter((s: Subscriber) => s.id != studentId)
@@ -35,7 +49,13 @@ export class WebsocketService {
    }
 
    pushUpdates = async (collectionId: number, updateData: any) => {
-      this.subs.get(collectionId).forEach((s: Subscriber) => s.ws.send(JSON.stringify(updateData)));
+      console.log('pst')
+      this.subs.get(collectionId).forEach((s: Subscriber) =>
+         s.ws.send(
+            JSON.stringify(updateData),
+            (err) => err ? console.log(err) : console.log('update sent')
+         )
+      );
    }
 
 }

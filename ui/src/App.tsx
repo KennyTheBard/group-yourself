@@ -16,6 +16,7 @@ export default class App extends React.Component {
     super(props);
 
     this.addAlert = this.addAlert.bind(this);
+    this.logIn = this.logIn.bind(this);
   }
 
   state = {
@@ -62,7 +63,7 @@ export default class App extends React.Component {
           <Switch>
             <Route exact path={'/'} render={() =>
               !!localStorage.getItem('token') ?
-                (<Redirect to='/' />) :
+                (<Redirect to='/organizer/home' />) :
                 (<Redirect to='/login' />)
             } />
             <Route exact path={'/login'} render={(matchProps) =>

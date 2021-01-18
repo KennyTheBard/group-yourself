@@ -9,21 +9,8 @@ export class CollectionService {
    ) { }
 
    create = async (name: string, startingYear: number, ownerId: number): Promise<any> => {
-      const config = await this.db.query(
-         `INSERT INTO configuration (join_allowed, completion_strategy) ` +
-         `VALUES ?`,
-         [
-            [
-               [
-                  false,
-                  CompletionStrategy.Random
-               ]
-            ]
-         ]
-      );
-
       return (await this.db.query(
-         `INSERT INTO group_collection (name, starting_year, owner_id, config_id) ` +
+         `INSERT INTO group_collection (name, starting_year, owner_id, join_allowed, completion_strategy) ` +
          `VALUES ?`,
          [
             [
@@ -31,7 +18,8 @@ export class CollectionService {
                name,
                startingYear,
                ownerId,
-               config.insertId,
+               false,
+                  CompletionStrategy.Random
             ]
          ]
       ]

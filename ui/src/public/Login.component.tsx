@@ -15,7 +15,7 @@ export interface LoginProps extends RouteComponentProps {
 export default class LoginComponent extends React.Component<LoginProps, any> {
 
    state = {
-      username: '',
+      email: '',
       password: ''
    }
 
@@ -25,8 +25,8 @@ export default class LoginComponent extends React.Component<LoginProps, any> {
       }
    }
 
-   onChangeUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-      this.setState({ username: e.target.value })
+   onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.setState({ email: e.target.value })
    }
 
    onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +37,7 @@ export default class LoginComponent extends React.Component<LoginProps, any> {
       e.preventDefault();
 
       axios.post(config.SERVER_URL + '/auth/login', {
-         username: this.state.username,
+         email: this.state.email,
          password: this.state.password
       })
          .then((res: { data: string }) => {
@@ -57,8 +57,8 @@ export default class LoginComponent extends React.Component<LoginProps, any> {
 
                <form onSubmit={this.onSubmit}>
                   <div className='form-group'>
-                     <label>Username</label>
-                     <input type='text' value={this.state.username} onChange={this.onChangeUsername} className='form-control' />
+                     <label>Email</label>
+                     <input type='text' value={this.state.email} onChange={this.onChangeEmail} className='form-control' />
                   </div>
                   <div className='form-group'>
                      <label>Password</label>

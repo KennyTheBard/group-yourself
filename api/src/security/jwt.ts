@@ -11,7 +11,7 @@ export const generateToken = async (payload: object) => {
         return signed;
     } catch (err) {
         console.trace(err);
-        throw new ServerError("Failed to sign the encoded token", 500);
+        throw new ServerError('Failed to sign the encoded token', 500);
     }
 };
 
@@ -21,15 +21,16 @@ const verifyAndDecodeData = async (token: string) => {
         return decoded;
     } catch (err) {
         console.trace(err);
-        throw new ServerError("Failed to decode the token", 400);
+        throw new ServerError('Failed to decode the token', 400);
     }
 };
 
 export const authorizeAndExtractUserToken = async (req: Request, res: Response, next: () => void) => {
     if (!req.headers.authorization) {
         res.status(403).send('Authorization header is missing');
+        return;
     }
-    const token = req.headers.authorization.split("Bearer ")[1];
+    const token = req.headers.authorization.split('Bearer ')[1];
 
     req.user = await verifyAndDecodeData(token) as UserAccount;
 
@@ -39,6 +40,7 @@ export const authorizeAndExtractUserToken = async (req: Request, res: Response, 
 export const authorizeAndExtractStudentToken = async (req: Request, res: Response, next: () => void) => {
     if (!req.headers.authorization) {
         res.status(403).send('Authorization header is missing');
+        return;
     }
     const parts = req.headers.authorization.split(' ');
 
