@@ -1,3 +1,5 @@
+import { NotificationService } from './../services/notification.service';
+import { MailService } from './../services/mail.service';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { StudentService } from '../services/student.service';
@@ -17,6 +19,7 @@ export class OrganizerController {
    private collectionService: CollectionService;
    private groupService: GroupService;
    private configService: ConfigService;
+   private notificationService: NotificationService;
 
    constructor(
    ) {
@@ -24,6 +27,7 @@ export class OrganizerController {
       this.collectionService = InstanceManager.get(CollectionService);
       this.groupService = InstanceManager.get(GroupService);
       this.configService = InstanceManager.get(ConfigService);
+      this.notificationService = InstanceManager.get(NotificationService);
 
       this.router.use(authorizeAndExtractUserToken);
 
@@ -36,6 +40,7 @@ export class OrganizerController {
       this.router.post(`${this.path}/group`, this.addGroup);
       this.router.get(`${this.path}/group/:collectionId`, this.getGroups);
       this.router.get(`${this.path}/collection/data/:collectionId`, this.getData);
+      this.router.post(`${this.path}/notify/:collectionId`, this.notifyStudents);
    }
 
    /**
@@ -168,6 +173,19 @@ export class OrganizerController {
          const result = await this.collectionService.getData(collectionId);
 
          res.status(StatusCodes.OK).send(result);
+      } catch (err) {
+         res.status(400).send(err.message);
+      }
+   }
+
+   notifyStudents = async (req: Request, res: Response) => {
+      try {
+         const collectionId = parseInt(req.params['collectionId']);
+         const students = await this.studentService.getStudentsForCollection(collectionId);
+         
+         await this.notificationService.notifyStudents(collectionId, students);
+
+         res.status(StatusCodes.OK).send();
       } catch (err) {
          res.status(400).send(err.message);
       }

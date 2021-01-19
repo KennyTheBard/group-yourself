@@ -37,6 +37,7 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
 
    state = {
       collectionId: 0,
+      sendingEmails: false,
       data: {} as CollectionData,
       createNewGroup: false,
       newGroup: {
@@ -101,6 +102,20 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
             });
       };
    }
+
+   sendEmails = (e: React.MouseEvent<HTMLButtonElement>) => {
+      axios.post(`${config.SERVER_URL}/org/notify/${this.state.collectionId}`,
+         {}, {
+         headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+         }
+      })
+         .then((res) => {
+            this.props.alert('success', 'Students have been notified, don\'t forget to enable auto-enrollment!');
+         }).catch((error: AxiosError) => {
+            this.props.alert('error', error.response.data);
+         });
+   };
 
    onChangeNewGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
       this.setState({
@@ -197,6 +212,16 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
       return (
          <div>
             <div>
+               {/* Send emails to all students */}
+               {
+                  <div>
+                     <button
+                        disabled={this.state.sendingEmails}
+                        onClick={this.sendEmails}>
+                        Notify students through email
+                     </button>
+                  </div>
+               }
                {/* Create new group button */}
                {this.state.createNewGroup ?
                   (<button onClick={() => {
@@ -276,7 +301,7 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
                            <div className='form-group'>
                               <label>Email</label>
                               <input
-                                 type='number'
+                                 type='text'
                                  value={this.state.newStudent.email}
                                  onChange={this.onChangeNewStudentEmail}
                                  className='form-control' />

@@ -1,3 +1,4 @@
+import { NotificationService } from './services/notification.service';
 import * as dotenv from 'dotenv';
 import * as nodemailer from 'nodemailer';
 import * as cron from 'node-cron';
@@ -89,6 +90,7 @@ const init = async () => {
    InstanceManager.register(new MailService(smtpTransport));
    InstanceManager.register(new WebsocketService(router));
    const realTimeService = InstanceManager.register(new RealTimeService(dbPool));
+   InstanceManager.register(new NotificationService());
 
    // add middleware
    app.use(express.json());
