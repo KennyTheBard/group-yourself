@@ -37,7 +37,7 @@ export default class OrganizerHome extends React.Component<OrganizerHomeProps, a
                'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
          })
-         .then((res) => {
+         .then((res: { data: string }) => {
             this.setState({ collections: res.data })
          }).catch((error: AxiosError) => {
             this.props.alert('error', error.response.data);
@@ -85,9 +85,15 @@ export default class OrganizerHome extends React.Component<OrganizerHomeProps, a
                'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
          })
-         .then((res: { data: string }) => {
+         .then((res) => {
             this.props.alert('success', 'Successfully created new collection!');
-            this.setState({ createNewCollection: false });
+            this.setState({
+               createNewCollection: false,
+               newCollection: {
+                  name: '',
+                  startingYear: 0
+               }
+            });
             this.loadData();
          }).catch((error: AxiosError) => {
             this.props.alert('error', error.response.data || 'Creation failed');
@@ -97,6 +103,7 @@ export default class OrganizerHome extends React.Component<OrganizerHomeProps, a
    render() {
       return (
          <div>
+            {/* Create new collection button */}
             {this.state.createNewCollection ?
                (<button onClick={() => {
                   this.setState({ createNewCollection: false })
@@ -109,6 +116,8 @@ export default class OrganizerHome extends React.Component<OrganizerHomeProps, a
                   Create new collection
                </button>)
             }
+
+            {/* Create new collection form */}
             {this.state.createNewCollection &&
                (<div className='form-container'>
                   <fieldset>
@@ -138,6 +147,8 @@ export default class OrganizerHome extends React.Component<OrganizerHomeProps, a
                   </fieldset>
                </div>)
             }
+
+            {/* Collections list */}
             {this.state.collections.map((c) => {
                return (
                   <div>

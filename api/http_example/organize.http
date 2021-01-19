@@ -90,3 +90,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY
 GET http://{{host}}/api/org/group/2
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8
+
+
+### Get collection data
+GET http://{{host}}/api/org/collection/data/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6bnVsbH0.VElvWSZJP3xHqtJu3QIxoa4Ikoj-tLV9I2gX9SD64K8

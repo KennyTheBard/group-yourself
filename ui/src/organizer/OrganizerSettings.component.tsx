@@ -37,19 +37,23 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
 
    state = {
       collectionId: 0,
-      studentId: 0,
-      studentCode: '',
-      data: {} as CollectionData
+      data: {} as CollectionData,
+      createNewGroup: false,
+      newGroup: {
+         name: '',
+         maxSeats: 0
+      },
+      addNewStudents: false,
+      newStudent: {
+         fullname: '',
+         email: ''
+      }
    };
 
    constructor(props: OrganizerSettingProps) {
       super(props);
 
       this.state.collectionId = parseInt(props.match.params.collectionId);
-
-      const query = new URLSearchParams(this.props.location.search);
-      this.state.studentId = parseInt(query.get('id') || '0');
-      this.state.studentCode = query.get('code') || '';
    }
 
    componentDidMount() {
@@ -57,32 +61,33 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
          this.props.history.push('/')
       }
 
-      const ws = new WebSocket(`${config.SOCKET_URL}?` +
-         `groupCollectionId=${this.state.collectionId}&studentId=${this.state.studentId}`);
-
-
-      ws.onopen = () => {
-         console.log('connected');
-      }
-
-      const that = this;
-      ws.onmessage = (event) => {
-         console.log(event.data);
-         that.setState({ data: event.data });
-      };
-
-      ws.onclose = () => {
-         console.log('disconnected');
-
-      }
+      this.loadData();
    }
 
-   toggleJoinAllowedForGroup(collectionId: number, active: boolean) {
+   loadData() {
+      axios.get(`${config.SERVER_URL}/org/collection/data/${this.state.collectionId}`, {
+         headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+         }
+      }).then((res: { data: string }) => {
+         this.setState({
+            data: res.data
+         });
+      }).catch((error: AxiosError) => {
+         this.props.alert('error', error.response.data);
+      });
+   }
+
+   toggleJoinAllowedForCollection(collectionId: number, active: boolean) {
       return (e: React.MouseEvent<HTMLButtonElement>) => {
          axios.put(`${config.SERVER_URL}/org/config`, {
             collectionId,
             joinAllowed: active,
             strategy: 'RANDOM'
+         }, {
+            headers: {
+               'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
          })
             .then((res) => {
                if (active) {
@@ -90,17 +95,204 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
                } else {
                   this.props.alert('success', 'Successfully deactivated auto-enrollment!');
                }
+               this.loadData();
             }).catch((error: AxiosError) => {
                this.props.alert('error', error.response.data);
             });
       };
    }
 
+   onChangeNewGroupName = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.setState({
+         newGroup: {
+            name: e.target.value,
+            maxSeats: this.state.newGroup.maxSeats
+         }
+      })
+   }
+
+   onChangeNewGroupMaxSeats = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.setState({
+         newGroup: {
+            name: this.state.newGroup.name,
+            maxSeats: e.target.value
+         }
+      })
+   }
+
+   onSubmitGroup = (e: React.SyntheticEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      axios.post(`${config.SERVER_URL}/org/group`, {
+         collectionId: this.state.collectionId,
+         name: this.state.newGroup.name,
+         maxSeats: this.state.newGroup.maxSeats
+      }, {
+         headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+         }
+      }).then((res) => {
+         this.props.alert('success', 'Successfully created new group!');
+         this.setState({
+            createNewGroup: false,
+            newGroup: {
+               name: '',
+               maxSeats: 0
+            }
+         });
+         this.loadData();
+      }).catch((error: AxiosError) => {
+         this.props.alert('error', error.response.data || 'Creation failed');
+      });
+   }
+
+   onChangeNewStudentFullname = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.setState({
+         newStudent: {
+            fullname: e.target.value,
+            email: this.state.newStudent.email
+         }
+      })
+   }
+
+   onChangeNewStudentEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+      this.setState({
+         newStudent: {
+            fullname: this.state.newStudent.fullname,
+            email: e.target.value
+         }
+      })
+   }
+
+   onSubmitStudent = (e: React.SyntheticEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      axios.post(`${config.SERVER_URL}/org/student`,
+         {
+            collectionId: this.state.collectionId,
+            fullname: this.state.newStudent.fullname,
+            email: this.state.newStudent.email
+         },
+         {
+            headers: {
+               'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+         })
+         .then((res) => {
+            this.props.alert('success', 'Successfully added student!');
+            this.setState({
+               assNewStudent: false,
+               newStudent: {
+                  fullname: '',
+                  email: ''
+               }
+            });
+            this.loadData();
+         }).catch((error: AxiosError) => {
+            this.props.alert('error', error.response.data || 'Creation failed');
+         });
+   }
+
    render() {
       return (
          <div>
             <div>
-               {this.state.data.groups && this.state.data.groups.map((g) => {
+               {/* Create new group button */}
+               {this.state.createNewGroup ?
+                  (<button onClick={() => {
+                     this.setState({ createNewGroup: false })
+                  }}>
+                     Cancel
+                  </button>) :
+                  (<button onClick={() => {
+                     this.setState({ createNewGroup: true })
+                  }}>
+                     Create new group
+                  </button>)
+               }
+
+               {/* Create new group form */}
+               {this.state.createNewGroup &&
+                  (<div className='form-container'>
+                     <fieldset>
+                        <legend>Create new group</legend>
+
+                        <form onSubmit={this.onSubmitGroup}>
+                           <div className='form-group'>
+                              <label>Name</label>
+                              <input
+                                 type='text'
+                                 value={this.state.newGroup.name}
+                                 onChange={this.onChangeNewGroupName}
+                                 className='form-control' />
+                           </div>
+                           <div className='form-group'>
+                              <label>Max seats</label>
+                              <input
+                                 type='number'
+                                 value={this.state.newGroup.maxSeats}
+                                 onChange={this.onChangeNewGroupMaxSeats}
+                                 className='form-control' />
+                           </div>
+                           <div className='form-group'>
+                              <input type='submit' value='Create' className='btn btn-submit' />
+                           </div>
+                        </form>
+                     </fieldset>
+                  </div>)
+               }
+            </div>
+
+            <div>
+               {/* Add new student */}
+               {this.state.addNewStudents ?
+                  (<button onClick={() => {
+                     this.setState({ addNewStudents: false })
+                  }}>
+                     Cancel
+                  </button>) :
+                  (<button onClick={() => {
+                     this.setState({ addNewStudents: true })
+                  }}>
+                     Add new student
+                  </button>)
+               }
+
+               {/* Add new student form */}
+               {this.state.addNewStudents &&
+                  (<div className='form-container'>
+                     <fieldset>
+                        <legend>Create new student</legend>
+
+                        <form onSubmit={this.onSubmitStudent}>
+                           <div className='form-group'>
+                              <label>Name</label>
+                              <input
+                                 type='text'
+                                 value={this.state.newStudent.fullname}
+                                 onChange={this.onChangeNewStudentFullname}
+                                 className='form-control' />
+                           </div>
+                           <div className='form-group'>
+                              <label>Email</label>
+                              <input
+                                 type='number'
+                                 value={this.state.newStudent.email}
+                                 onChange={this.onChangeNewStudentEmail}
+                                 className='form-control' />
+                           </div>
+                           <div className='form-group'>
+                              <input type='submit' value='Create' className='btn btn-submit' />
+                           </div>
+                        </form>
+                     </fieldset>
+                  </div>)
+               }
+            </div>
+
+            <div>
+               {/* Groups list */}
+               {this.state.data && this.state.data.groups && this.state.data.groups.map((g) => {
                   return (
                      <div>
                         <p>
@@ -115,17 +307,21 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
                               );
                            })}
                         </ul>
-                        <button
-                           onClick={this.toggleJoinAllowedForGroup(g.id, !this.state.data.joinAllowed)}>
-                           {!this.state.data.joinAllowed ?
-                              'Allow auto-enrollment' :
-                              'Disallow auto-enrollment'}
-                        </button>
                      </div>
                   );
                })}
+               {this.state.data &&
+                  <button
+                     onClick={this.toggleJoinAllowedForCollection(this.state.collectionId, !this.state.data.joinAllowed)}>
+                     {!this.state.data.joinAllowed ?
+                        'Enable auto-enrollment' :
+                        'Disable auto-enrollment'}
+                  </button>
+               }
+               {this.state.data && this.state.data.unseatedStudents &&
+                  <p>Students remaining: <b>{this.state.data.unseatedStudents.length}</b></p>
+               }
             </div>
-            <p>Students remaining:{this.state.data.unseatedStudents}</p>
          </div>)
    }
 }

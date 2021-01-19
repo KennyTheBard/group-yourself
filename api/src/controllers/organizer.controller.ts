@@ -35,6 +35,7 @@ export class OrganizerController {
       this.router.get(`${this.path}/student/:collectionId`, this.getStudents);
       this.router.post(`${this.path}/group`, this.addGroup);
       this.router.get(`${this.path}/group/:collectionId`, this.getGroups);
+      this.router.get(`${this.path}/collection/data/:collectionId`, this.getData);
    }
 
    /**
@@ -151,6 +152,20 @@ export class OrganizerController {
    getGroups = async (req: Request, res: Response) => {
       try {
          const result = await this.groupService.getGroupsForCollection(parseInt(req.params['collectionId']));
+
+         res.status(StatusCodes.OK).send(result);
+      } catch (err) {
+         res.status(400).send(err.message);
+      }
+   }
+
+   /**
+    * GET /org/collection/data/:collectionId
+    */
+   getData = async (req: Request, res: Response) => {
+      try {
+         const collectionId = req.params['collectionId'] ? parseInt(req.params['collectionId']) : undefined;
+         const result = await this.collectionService.getData(collectionId);
 
          res.status(StatusCodes.OK).send(result);
       } catch (err) {

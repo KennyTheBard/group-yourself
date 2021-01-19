@@ -72,7 +72,7 @@ export default class StudentComponent extends React.Component<StudentProps, any>
          axios.post(config.SERVER_URL + '/stud/enroll', {
             groupId
          })
-            .then((res: { data: string }) => {
+            .then((res) => {
                this.props.alert('success', 'Successfully joined new group!');
             }).catch((error: AxiosError) => {
                this.props.alert('error', error.response.data);
