@@ -30,14 +30,6 @@ export class WebsocketService {
             ws
          });
 
-         ws.on('upgrade', (req) => {
-            console.log(req);
-         });
-
-         ws.on('error', (err) => {
-            console.log(err);
-         });
-
          ws.on('close', () => {
             console.log(`Connection closed`);
             this.subs.set(
@@ -49,7 +41,10 @@ export class WebsocketService {
    }
 
    pushUpdates = async (collectionId: number, updateData: any) => {
-      console.log('pst')
+      if (!this.subs.get(collectionId)) {
+         return; 
+      }
+      
       this.subs.get(collectionId).forEach((s: Subscriber) =>
          s.ws.send(
             JSON.stringify(updateData),

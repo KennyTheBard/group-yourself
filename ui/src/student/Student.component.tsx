@@ -4,7 +4,6 @@ import * as H from 'history';
 import { AlertType } from '../alert/Alert.component';
 import axios from 'axios';
 import { AxiosError } from '../utils/axios-error';
-import WebSocket from 'ws';
 import config from '../utils/config';
 
 export interface StudentProps extends RouteComponentProps<{
@@ -48,22 +47,27 @@ export default class StudentComponent extends React.Component<StudentProps, any>
       const query = new URLSearchParams(this.props.location.search);
       this.state.studentId = parseInt(query.get('id') || '0');
       this.state.studentCode = query.get('code') || '';
-
-      const ws = new WebSocket(`${config.SOCKET_URL}/socket?` +
-         `groupCollectionId=${this.state.collectionId}&studentId=${this.state.studentId}`, {
-         perMessageDeflate: false
-      });
-
-      const that = this;
-      ws.on('message', function incoming(data) {
-         console.log(data);
-         that.setState({ data })
-      });
    }
 
    componentDidMount() {
       if (!localStorage.getItem('token')) {
          this.props.history.push('/')
+      }
+
+      const ws = new WebSocket(`${config.SOCKET_URL}/?` +
+         `groupCollectionId=${this.state.collectionId}&studentId=${this.state.studentId}`);
+
+      const that = this;
+      ws.onmessage = (event: MessageEvent) => {
+         that.setState({ data: JSON.parse(event.data) })
+      }
+
+      ws.onopen = () => {
+         console.log('connected')
+      }
+
+      ws.onclose = () => {
+         console.log('disconnected')
       }
    }
 

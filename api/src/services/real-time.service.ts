@@ -17,7 +17,7 @@ export class RealTimeService {
    }
 
    updateSubscribers = async () => {
-      const result = this.collectionService.getData();
+      const result = await this.collectionService.getData();
      
       // push updates for each collection publisher
       Object.keys(result).forEach(collectionId => {
