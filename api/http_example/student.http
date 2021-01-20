@@ -4,7 +4,7 @@
 ### Create a collection
 POST http://{{host}}/api/stud/enroll
 Content-Type: application/json
-Authorization: Student 1 12345678901234567890123456789012
+Authorization-Student: 1:12345678901234567890123456789012
 
 {
    "groupId": 1

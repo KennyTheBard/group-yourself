@@ -99,14 +99,16 @@ const init = async () => {
    // init controllers
    [
       new AuthController(),
-      new OrganizerController(),
-      new StudentController()
-   ].forEach(controller => app.use('/api', controller.router))
+      new StudentController(),
+      new OrganizerController()
+   ].forEach(controller => app.use(`/api${controller.path}`, controller.router))
 
    // schedule the task to update subscribers
-   cron.schedule('*/5 * * * * *', () => {
-      realTimeService.updateSubscribers();
-   });
+   if (process.env.CRONJOB_ACTIVE === 'true') {
+      cron.schedule('*/5 * * * * *', () => {
+         realTimeService.updateSubscribers();
+      });
+   }
 
    // start server
    const port = process.env.PORT;

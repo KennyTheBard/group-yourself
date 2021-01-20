@@ -31,16 +31,16 @@ export class OrganizerController {
 
       this.router.use(authorizeAndExtractUserToken);
 
-      this.router.post(`${this.path}/collection`, this.createCollection);
-      this.router.get(`${this.path}/collection`, this.getCollections);
-      this.router.put(`${this.path}/config`, this.updateCollectionConfig);
-      this.router.get(`${this.path}/config/:collectionId`, this.getCollectionConfig);
-      this.router.post(`${this.path}/student`, this.enroll);
-      this.router.get(`${this.path}/student/:collectionId`, this.getStudents);
-      this.router.post(`${this.path}/group`, this.addGroup);
-      this.router.get(`${this.path}/group/:collectionId`, this.getGroups);
-      this.router.get(`${this.path}/collection/data/:collectionId`, this.getData);
-      this.router.post(`${this.path}/notify/:collectionId`, this.notifyStudents);
+      this.router.post('/collection', this.createCollection);
+      this.router.get('/collection', this.getCollections);
+      this.router.put('/config', this.updateCollectionConfig);
+      this.router.get('/config/:collectionId', this.getCollectionConfig);
+      this.router.post('/student', this.enroll);
+      this.router.get('/student/:collectionId', this.getStudents);
+      this.router.post('/group', this.addGroup);
+      this.router.get('/group/:collectionId', this.getGroups);
+      this.router.get('/collection/data/:collectionId', this.getCollectionData);
+      this.router.post('/notify/:collectionId', this.notifyStudents);
    }
 
    /**
@@ -167,7 +167,7 @@ export class OrganizerController {
    /**
     * GET /org/collection/data/:collectionId
     */
-   getData = async (req: Request, res: Response) => {
+   getCollectionData = async (req: Request, res: Response) => {
       try {
          const collectionId = req.params['collectionId'] ? parseInt(req.params['collectionId']) : undefined;
          const result = await this.collectionService.getData(collectionId);
@@ -178,6 +178,9 @@ export class OrganizerController {
       }
    }
 
+   /**
+    * POST /org/notify/:collectionId
+    */
    notifyStudents = async (req: Request, res: Response) => {
       try {
          const collectionId = parseInt(req.params['collectionId']);

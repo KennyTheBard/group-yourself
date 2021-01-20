@@ -16,8 +16,8 @@ export class AuthController {
    ) {
       this.authService = InstanceManager.get(AuthService);
 
-      this.router.post(`${this.path}/register`, this.register);
-      this.router.post(`${this.path}/login`, this.login);
+      this.router.post(`/register`, this.register);
+      this.router.post(`/login`, this.login);
    }
 
    /**

@@ -49,11 +49,22 @@ export default class StudentComponent extends React.Component<StudentProps, any>
       this.state.studentCode = query.get('code') || '';
    }
 
-   componentDidMount() {
-      if (!localStorage.getItem('token')) {
-         this.props.history.push('/')
-      }
+   loadData() {
+      axios.get(`${config.SERVER_URL}/stud/collection/data/${this.state.collectionId}`, {
+         headers: {
+            'Authorization-Student': `${this.state.studentId}:${this.state.studentCode}`
+         }
+      })
+         .then((res) => {
+            this.setState({
+               data: res.data
+            });
+         }).catch((error: AxiosError) => {
+            this.props.alert('error', error.response.data);
+         });
+   }
 
+   componentDidMount() {
       const ws = new WebSocket(`${config.SOCKET_URL}/?` +
          `groupCollectionId=${this.state.collectionId}&studentId=${this.state.studentId}`);
 
@@ -69,15 +80,22 @@ export default class StudentComponent extends React.Component<StudentProps, any>
       ws.onclose = () => {
          console.log('disconnected')
       }
+
+      this.loadData();
    }
 
    joinGroup(groupId: number) {
       return (e: React.MouseEvent<HTMLButtonElement>) => {
          axios.post(config.SERVER_URL + '/stud/enroll', {
             groupId
+         }, {
+            headers: {
+               'Authorization-Student': `${this.state.studentId}:${this.state.studentCode}`
+            }
          })
             .then((res) => {
                this.props.alert('success', 'Successfully joined new group!');
+               this.loadData();
             }).catch((error: AxiosError) => {
                this.props.alert('error', error.response.data);
             });

@@ -56,7 +56,7 @@ export class StudentService {
 
       try {
          // lock current student (just in case it has multiple tabs)
-         const student = await connection.query(
+         const students = await connection.query(
             'SELECT * FROM student WHERE id = ? AND uuid_code = ? FOR UPDATE',
             [
                studentId,
@@ -64,17 +64,18 @@ export class StudentService {
             ]
          );
 
-         if (student.length === 0) {
+         if (students.length === 0) {
             throw new Error('Incorrect student credentials');
          }
 
+         const student = students[0];
          if (student.group_id === groupId) {
             throw new Error('Student already enrolled in this group');
          }
 
          // lock choosen group and current group if it exists
          const groups = await connection.query(
-            'SELECT * FROM stud_group WHERE id IN ? FOR UPDATE',
+            'SELECT * FROM stud_group WHERE id IN (?) FOR UPDATE',
             [
                [student.group_id, groupId].filter(id => !!id)
             ]
@@ -112,7 +113,7 @@ export class StudentService {
             'UPDATE student SET group_id = ? WHERE id = ?',
             [
                groupId,
-               student.group_id
+               studentId
             ]
          )
 

@@ -38,14 +38,15 @@ export const authorizeAndExtractUserToken = async (req: Request, res: Response, 
 };
 
 export const authorizeAndExtractStudentToken = async (req: Request, res: Response, next: () => void) => {
-    if (!req.headers.authorization) {
+    const authHeader = req.headers['authorization-student'] as string;
+    if (!authHeader) {
         res.status(403).send('Authorization header is missing');
         return;
     }
-    const parts = req.headers.authorization.split(' ');
+    const parts = authHeader.split(':');
 
     req.user = {
-        id: parseInt(parts[1]),
+        id: parseInt(parts[0]),
         uuidCode: parts[1]
     } as StudentAccount;
 
