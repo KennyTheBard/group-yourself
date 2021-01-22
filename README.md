@@ -34,4 +34,5 @@ All requests will be send to localhost:3000/api. For usage examples you can chec
 - [x] Use `ws` to establish connection with front end client
 - [x] Create a `cronjob` that triggers updates and notifications for each group collection
 - [ ] Write a script that will stress test the row locking mechanism of the enrollment endpoint
-- [ ] Fix student page
+- [x] Fix student page
+- [x] Fix database initialization bug

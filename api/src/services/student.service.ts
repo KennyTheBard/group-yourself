@@ -106,7 +106,6 @@ export class StudentService {
                groupId
             ]
          )
-         
 
          // update student group id
          await connection.query(
