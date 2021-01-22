@@ -60,7 +60,7 @@ export default class StudentComponent extends React.Component<StudentProps, any>
                data: res.data
             });
          }).catch((error: AxiosError) => {
-            this.props.alert('error', error.response.data);
+            this.props.alert('error', error.response?.data || 'Failed to establish connection to server');
          });
    }
 
@@ -97,7 +97,7 @@ export default class StudentComponent extends React.Component<StudentProps, any>
                this.props.alert('success', 'Successfully joined new group!');
                this.loadData();
             }).catch((error: AxiosError) => {
-               this.props.alert('error', error.response.data);
+               this.props.alert('error', error.response?.data || 'Failed to establish connection to server');
             });
       };
    }

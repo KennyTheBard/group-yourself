@@ -75,7 +75,7 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
             data: res.data
          });
       }).catch((error: AxiosError) => {
-         this.props.alert('error', error.response.data);
+         this.props.alert('error', error.response?.data || 'Failed to establish connection to server');
       });
    }
 
@@ -98,7 +98,7 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
                }
                this.loadData();
             }).catch((error: AxiosError) => {
-               this.props.alert('error', error.response.data);
+               this.props.alert('error', error.response?.data || 'Failed to establish connection to server');
             });
       };
    }
@@ -113,7 +113,7 @@ export default class OrganizerSetting extends React.Component<OrganizerSettingPr
          .then((res) => {
             this.props.alert('success', 'Students have been notified, don\'t forget to enable auto-enrollment!');
          }).catch((error: AxiosError) => {
-            this.props.alert('error', error.response.data);
+            this.props.alert('error', error.response?.data || 'Failed to establish connection to server');
          });
    };
 

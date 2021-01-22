@@ -1,6 +1,7 @@
 DROP DATABASE IF EXISTS group_db;
 CREATE DATABASE group_db;
 USE group_db;
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('password');
 CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON group_db.* TO 'user'@'%';
 FLUSH PRIVILEGES;
@@ -67,23 +68,23 @@ VALUES
 INSERT INTO group_collection
   (name, starting_year, owner_id, join_allowed, completion_strategy)
 VALUES
-  ('CA', 2021, 1, true, 'RANDOM'), -- id 1
-  ('CB', 2021, 1, true, 'RANDOM'); -- id 2
+  ('CA', 2021, 1, true, 'RANDOM'); -- id 1
+  -- ('CB', 2021, 1, true, 'RANDOM'); -- id 2
 
 -- stud_group table | Cate 5 grupe pentru fiecare serie
 INSERT INTO stud_group
   (name, collection_id, max_seats, occupied_seats)
 VALUES
-  ('311', 1, 25, 0), -- id 1 | group 311CA
-  ('312', 1, 25, 0), -- id 2 | group 312CA
-  ('313', 1, 25, 0), -- id 3 | group 313CA
-  ('314', 1, 25, 0), -- id 4 | group 314CA
-  ('315', 1, 25, 0), -- id 5 | group 315CA
-  ('311', 2, 25, 0), -- id 6 | group 311CB
-  ('312', 2, 25, 0), -- id 7 | group 312CB
-  ('313', 2, 25, 0), -- id 8 | group 313CB
-  ('314', 2, 25, 0), -- id 9 | group 314CB
-  ('315', 2, 25, 0); -- id 10 | group 315CB
+  ('311', 1, 25, 10), -- id 1 | group 311CA
+  ('312', 1, 25, 10), -- id 2 | group 312CA
+  ('313', 1, 25, 10), -- id 3 | group 313CA
+  ('314', 1, 25, 10), -- id 4 | group 314CA
+  ('315', 1, 25, 10); -- id 5 | group 315CA
+  -- ('311', 2, 25, 0), -- id 6 | group 311CB
+  -- ('312', 2, 25, 0), -- id 7 | group 312CB
+  -- ('313', 2, 25, 0), -- id 8 | group 313CB
+  -- ('314', 2, 25, 0), -- id 9 | group 314CB
+  -- ('315', 2, 25, 0); -- id 10 | group 315CB
 
 -- student table | 2 serii, fiecare cu cate 5 grupe, iar fiecare grupa are 10 studenti
 INSERT INTO student
@@ -138,54 +139,54 @@ VALUES
   ('12345678901234567890123456789012', 'petru.rusu@faculty.com', 'Petru Rusu', 1, 5),
   ('12345678901234567890123456789012', 'olga.ceausescu@faculty.com', 'Olga Ceausescu', 1, 5),
   ('12345678901234567890123456789012', 'rodica.ilie@faculty.com', 'Rodica Ilie', 1, 5),
-  ('12345678901234567890123456789012', 'augustina.pavel@faculty.com', 'Augustina Pavel', 1, 5),
-  ('12345678901234567890123456789012', 'ionus.barladeanu@faculty.com', 'Ionus Bârladeanu', 2, 1),
-  ('12345678901234567890123456789012', 'sorin.tomoiaga@faculty.com', 'Sorin Tomoiaga', 2, 1),
-  ('12345678901234567890123456789012', 'cami.presecan@faculty.com', 'Cami Presecan', 2, 1),
-  ('12345678901234567890123456789012', 'virgil.barbulescu@faculty.com', 'Virgil Barbulescu', 2, 1),
-  ('12345678901234567890123456789012', 'ciprian.vulpes@faculty.com', 'Ciprian Vulpes', 2, 1),
-  ('12345678901234567890123456789012', 'aurica.stefoniou@faculty.com', 'Aurica Stefoniou', 2, 1),
-  ('12345678901234567890123456789012', 'lucian.lucescu@faculty.com', 'Lucian Lucescu', 2, 1),
-  ('12345678901234567890123456789012', 'adi.bucsa@faculty.com', 'Adi Bucsa', 2, 1),
-  ('12345678901234567890123456789012', 'jenica.ene@faculty.com', 'Jenica Ene', 2, 1),
-  ('12345678901234567890123456789012', 'glad.parvulescu@faculty.com', 'Glad Pârvulescu', 2, 1),
-  ('12345678901234567890123456789012', 'monique.vladimirescu@faculty.com', 'Monique Vladimirescu', 2, 2),
-  ('12345678901234567890123456789012', 'velkan.dragan@faculty.com', 'Velkan Dragan', 2, 2),
-  ('12345678901234567890123456789012', 'rodica.kogalniceaunu@faculty.com', 'Rodica Kogalniceaunu', 2, 2),
-  ('12345678901234567890123456789012', 'iulian.pangratiu@faculty.com', 'Iulian Pangratiu', 2, 2),
-  ('12345678901234567890123456789012', 'veronica.suciu@faculty.com', 'Veronica Suciu', 2, 2),
-  ('12345678901234567890123456789012', 'dorina.cernea@faculty.com', 'Dorina Cernea', 2, 2),
-  ('12345678901234567890123456789012', 'rodika.ilie@faculty.com', 'Rodika Ilie', 2, 2),
-  ('12345678901234567890123456789012', 'sorana.gheorghe@faculty.com', 'Sorana Gheorghe', 2, 2),
-  ('12345678901234567890123456789012', 'ionel.mihai@faculty.com', 'Ionel Mihai', 2, 2),
-  ('12345678901234567890123456789012', 'marius.kazaku@faculty.com', 'Marius Kazaku', 2, 2),
-  ('12345678901234567890123456789012', 'alex.butacu@faculty.com', 'Alex Butacu', 2, 3),
-  ('12345678901234567890123456789012', 'draguta.mironescu@faculty.com', 'Draguta Mironescu', 2, 3),
-  ('12345678901234567890123456789012', 'antoaneta.teodorescu@faculty.com', 'Antoaneta Teodorescu', 2, 3),
-  ('12345678901234567890123456789012', 'aurelia.piturca@faculty.com', 'Aurelia Piturca', 2, 3),
-  ('12345678901234567890123456789012', 'beatrix.hurgoi@faculty.com', 'Beatrix Hurgoi', 2, 3),
-  ('12345678901234567890123456789012', 'estera.iagar@faculty.com', 'Estera Iagar', 2, 3),
-  ('12345678901234567890123456789012', 'dan.nicolae@faculty.com', 'Dan Nicolae', 2, 3),
-  ('12345678901234567890123456789012', 'augustin.mihalache@faculty.com', 'Augustin Mihalache', 2, 3),
-  ('12345678901234567890123456789012', 'dimitry.varias@faculty.com', 'Dimitry Varias', 2, 3),
-  ('12345678901234567890123456789012', 'ion.minea@faculty.com', 'Ion Minea', 2, 3),
-  ('12345678901234567890123456789012', 'nicu.goian@faculty.com', 'Nicu Goian', 2, 4),
-  ('12345678901234567890123456789012', 'cristina.bucur@faculty.com', 'Cristina Bucur', 2, 4),
-  ('12345678901234567890123456789012', 'flori.barbu@faculty.com', 'Flori Barbu', 2, 4),
-  ('12345678901234567890123456789012', 'ihrin.moldovan@faculty.com', 'Ihrin Moldovan', 2, 4),
-  ('12345678901234567890123456789012', 'augustina.cantacuzino@faculty.com', 'Augustina Cantacuzino', 2, 4),
-  ('12345678901234567890123456789012', 'stefana.giurescu@faculty.com', 'Stefana Giurescu', 2, 4),
-  ('12345678901234567890123456789012', 'anica.dimir@faculty.com', 'Anica Dimir', 2, 4),
-  ('12345678901234567890123456789012', 'iulien.groza@faculty.com', 'Iulien Groza', 2, 4),
-  ('12345678901234567890123456789012', 'constansa.negoitescu@faculty.com', 'Constansa Negoitescu', 2, 4),
-  ('12345678901234567890123456789012', 'tatiana.vulcan@faculty.com', 'Tatiana Vulcan', 2, 4),
-  ('12345678901234567890123456789012', 'crina.banciu@faculty.com', 'Crina Banciu', 2, 5),
-  ('12345678901234567890123456789012', 'drahoslav.noica@faculty.com', 'Drahoslav Noica', 2, 5),
-  ('12345678901234567890123456789012', 'zana.simeonescu@faculty.com', 'Zana Simeonescu', 2, 5),
-  ('12345678901234567890123456789012', 'cornel.rudeanu@faculty.com', 'Cornel Rudeanu', 2, 5),
-  ('12345678901234567890123456789012', 'romanitza.stinga@faculty.com', 'Romanitza Stinga', 2, 5),
-  ('12345678901234567890123456789012', 'anemona.martinescu@faculty.com', 'Anemona Martinescu', 2, 5),
-  ('12345678901234567890123456789012', 'serban.ungureanu@faculty.com', 'Serban Ungureanu', 2, 5),
-  ('12345678901234567890123456789012', 'dinu.dumitru@faculty.com', 'Dinu Dumitru', 2, 5),
-  ('12345678901234567890123456789012', 'gheorghita.gheorghiu@faculty.com', 'Gheorghita Gheorghiu', 2, 5),
-  ('12345678901234567890123456789012', 'nedelcu.morosanu@faculty.com', 'Nedelcu Morosanu', 2, 5);
+  ('12345678901234567890123456789012', 'augustina.pavel@faculty.com', 'Augustina Pavel', 1, 5);
+  -- ('12345678901234567890123456789012', 'ionus.barladeanu@faculty.com', 'Ionus Bârladeanu', 2, 1),
+  -- ('12345678901234567890123456789012', 'sorin.tomoiaga@faculty.com', 'Sorin Tomoiaga', 2, 1),
+  -- ('12345678901234567890123456789012', 'cami.presecan@faculty.com', 'Cami Presecan', 2, 1),
+  -- ('12345678901234567890123456789012', 'virgil.barbulescu@faculty.com', 'Virgil Barbulescu', 2, 1),
+  -- ('12345678901234567890123456789012', 'ciprian.vulpes@faculty.com', 'Ciprian Vulpes', 2, 1),
+  -- ('12345678901234567890123456789012', 'aurica.stefoniou@faculty.com', 'Aurica Stefoniou', 2, 1),
+  -- ('12345678901234567890123456789012', 'lucian.lucescu@faculty.com', 'Lucian Lucescu', 2, 1),
+  -- ('12345678901234567890123456789012', 'adi.bucsa@faculty.com', 'Adi Bucsa', 2, 1),
+  -- ('12345678901234567890123456789012', 'jenica.ene@faculty.com', 'Jenica Ene', 2, 1),
+  -- ('12345678901234567890123456789012', 'glad.parvulescu@faculty.com', 'Glad Pârvulescu', 2, 1),
+  -- ('12345678901234567890123456789012', 'monique.vladimirescu@faculty.com', 'Monique Vladimirescu', 2, 2),
+  -- ('12345678901234567890123456789012', 'velkan.dragan@faculty.com', 'Velkan Dragan', 2, 2),
+  -- ('12345678901234567890123456789012', 'rodica.kogalniceaunu@faculty.com', 'Rodica Kogalniceaunu', 2, 2),
+  -- ('12345678901234567890123456789012', 'iulian.pangratiu@faculty.com', 'Iulian Pangratiu', 2, 2),
+  -- ('12345678901234567890123456789012', 'veronica.suciu@faculty.com', 'Veronica Suciu', 2, 2),
+  -- ('12345678901234567890123456789012', 'dorina.cernea@faculty.com', 'Dorina Cernea', 2, 2),
+  -- ('12345678901234567890123456789012', 'rodika.ilie@faculty.com', 'Rodika Ilie', 2, 2),
+  -- ('12345678901234567890123456789012', 'sorana.gheorghe@faculty.com', 'Sorana Gheorghe', 2, 2),
+  -- ('12345678901234567890123456789012', 'ionel.mihai@faculty.com', 'Ionel Mihai', 2, 2),
+  -- ('12345678901234567890123456789012', 'marius.kazaku@faculty.com', 'Marius Kazaku', 2, 2),
+  -- ('12345678901234567890123456789012', 'alex.butacu@faculty.com', 'Alex Butacu', 2, 3),
+  -- ('12345678901234567890123456789012', 'draguta.mironescu@faculty.com', 'Draguta Mironescu', 2, 3),
+  -- ('12345678901234567890123456789012', 'antoaneta.teodorescu@faculty.com', 'Antoaneta Teodorescu', 2, 3),
+  -- ('12345678901234567890123456789012', 'aurelia.piturca@faculty.com', 'Aurelia Piturca', 2, 3),
+  -- ('12345678901234567890123456789012', 'beatrix.hurgoi@faculty.com', 'Beatrix Hurgoi', 2, 3),
+  -- ('12345678901234567890123456789012', 'estera.iagar@faculty.com', 'Estera Iagar', 2, 3),
+  -- ('12345678901234567890123456789012', 'dan.nicolae@faculty.com', 'Dan Nicolae', 2, 3),
+  -- ('12345678901234567890123456789012', 'augustin.mihalache@faculty.com', 'Augustin Mihalache', 2, 3),
+  -- ('12345678901234567890123456789012', 'dimitry.varias@faculty.com', 'Dimitry Varias', 2, 3),
+  -- ('12345678901234567890123456789012', 'ion.minea@faculty.com', 'Ion Minea', 2, 3),
+  -- ('12345678901234567890123456789012', 'nicu.goian@faculty.com', 'Nicu Goian', 2, 4),
+  -- ('12345678901234567890123456789012', 'cristina.bucur@faculty.com', 'Cristina Bucur', 2, 4),
+  -- ('12345678901234567890123456789012', 'flori.barbu@faculty.com', 'Flori Barbu', 2, 4),
+  -- ('12345678901234567890123456789012', 'ihrin.moldovan@faculty.com', 'Ihrin Moldovan', 2, 4),
+  -- ('12345678901234567890123456789012', 'augustina.cantacuzino@faculty.com', 'Augustina Cantacuzino', 2, 4),
+  -- ('12345678901234567890123456789012', 'stefana.giurescu@faculty.com', 'Stefana Giurescu', 2, 4),
+  -- ('12345678901234567890123456789012', 'anica.dimir@faculty.com', 'Anica Dimir', 2, 4),
+  -- ('12345678901234567890123456789012', 'iulien.groza@faculty.com', 'Iulien Groza', 2, 4),
+  -- ('12345678901234567890123456789012', 'constansa.negoitescu@faculty.com', 'Constansa Negoitescu', 2, 4),
+  -- ('12345678901234567890123456789012', 'tatiana.vulcan@faculty.com', 'Tatiana Vulcan', 2, 4),
+  -- ('12345678901234567890123456789012', 'crina.banciu@faculty.com', 'Crina Banciu', 2, 5),
+  -- ('12345678901234567890123456789012', 'drahoslav.noica@faculty.com', 'Drahoslav Noica', 2, 5),
+  -- ('12345678901234567890123456789012', 'zana.simeonescu@faculty.com', 'Zana Simeonescu', 2, 5),
+  -- ('12345678901234567890123456789012', 'cornel.rudeanu@faculty.com', 'Cornel Rudeanu', 2, 5),
+  -- ('12345678901234567890123456789012', 'romanitza.stinga@faculty.com', 'Romanitza Stinga', 2, 5),
+  -- ('12345678901234567890123456789012', 'anemona.martinescu@faculty.com', 'Anemona Martinescu', 2, 5),
+  -- ('12345678901234567890123456789012', 'serban.ungureanu@faculty.com', 'Serban Ungureanu', 2, 5),
+  -- ('12345678901234567890123456789012', 'dinu.dumitru@faculty.com', 'Dinu Dumitru', 2, 5),
+  -- ('12345678901234567890123456789012', 'gheorghita.gheorghiu@faculty.com', 'Gheorghita Gheorghiu', 2, 5),
+  -- ('12345678901234567890123456789012', 'nedelcu.morosanu@faculty.com', 'Nedelcu Morosanu', 2, 5);

@@ -121,6 +121,8 @@ export class StudentService {
       } catch (err) {
          connection.rollback();
          throw new Error(err.message);
+      } finally {
+         connection.release();
       }
 
    }

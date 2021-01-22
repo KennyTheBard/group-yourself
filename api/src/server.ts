@@ -62,7 +62,7 @@ const init = async () => {
 
    // add logger to the database
    dbPool.on('enqueue', function (sequence) {
-      if ('Query' === sequence.constructor.name) {
+      if ('Query' === sequence?.constructor.name) {
          winstonLogger.info(sequence.sql);
       }
    });

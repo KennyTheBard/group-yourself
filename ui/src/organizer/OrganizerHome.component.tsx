@@ -40,7 +40,7 @@ export default class OrganizerHome extends React.Component<OrganizerHomeProps, a
          .then((res: { data: string }) => {
             this.setState({ collections: res.data })
          }).catch((error: AxiosError) => {
-            this.props.alert('error', error.response.data);
+            this.props.alert('error', error.response?.data || 'Failed to establish connection to server');
          });
    }
 
