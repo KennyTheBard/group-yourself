@@ -1,8 +1,20 @@
 # group-yourself
 
-## Back-End
+## Description
 
-### Run instructions
+An application made to simplify the process of self-enrollment in groups for students.
+
+
+## Tech stack
+
+For both API and UI apps, Node.js + Typescript have been used, alongside Express for back-end and React for front-end. This choice was motivated mostly by my familiarity with the Node.js ecosystem and personal preference for strongly typed languages.
+
+As a datasource solution, MySQL + InnoDB have been chosen for its support for row level locking, as this feature can bring huge performance boosts for operations that heavily use a small number of its schema tables (in this case the `stud_group`).
+
+For real-time updates in the UI, websockets have been employed through the npm package `ws` and its integration with exporess, `express-ws`. Client app will connect to the server through a websocket and a cronjob will trigger a query and will update each connected client with the result, thus modeling a publisher-subscriber relation.
+
+
+## Run instructions
 
 * Start database container:
 ```bash
@@ -22,17 +34,8 @@ npm run watch
 npm run start
 ```
 
-### Usage
-
-All requests will be send to localhost:3000/api. For usage examples you can check the `/api/http_example` directory. Those are example requests, but can be used easily with Visual Studio Code http client.
-
-
-## Todo
-
-- [x] Create gmail account and use it with nodemailer into a MailService (please take into consideration that you will have to allow the account to be used by a non trusted app)
-- [x] Start a front end project in the `/ui` directory (React, Angular or Vue)
-- [x] Use `ws` to establish connection with front end client
-- [x] Create a `cronjob` that triggers updates and notifications for each group collection
-- [x] Write a script that will stress test the row locking mechanism of the enrollment endpoint
-- [x] Fix student page
-- [x] Fix database initialization bug
+* Start front-end app:
+```bash
+# in /ui
+npm run start
+```
